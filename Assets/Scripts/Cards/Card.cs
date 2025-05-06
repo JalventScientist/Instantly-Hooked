@@ -1,3 +1,4 @@
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,6 +17,8 @@ public class Card : MonoBehaviour
     public bool IsPlayerCard;
     public Uniquecard uniqueCard;
 
+    bool Hovering = false;
+    bool AlreadySetup = false;
 
     Image cardRender;
     RectTransform cardTransform;
@@ -24,7 +27,6 @@ public class Card : MonoBehaviour
     private void Awake()
     {
         ButtonTransform = GetComponent<RectTransform>();
-
     }
 
     public virtual void ApplyCard()
@@ -45,6 +47,34 @@ public class Card : MonoBehaviour
         cardTransform = transform.GetChild(0).GetComponent<RectTransform>();
         cardRender = cardTransform.GetComponent<Image>();
         cardRender.sprite = Resources.Load<Sprite>("CardImages/" + transform.name);
-        print("a");
+        AlreadySetup = true;
+    }
+
+    private void OnMouseOver()
+    {
+        Hovering = true;
+    }
+
+    private void OnMouseExit()
+    {
+        Hovering = false;
+    }
+
+    private void Update()
+    {
+        if (AlreadySetup)
+        {
+            if (!Hovering)
+            {
+                //379.5
+                ButtonTransform.DOSizeDelta(new Vector2(0, 379.5f), 0.3f);
+                cardTransform.DOLocalMoveY(0, 0.3f);
+            }
+            else
+            {
+                ButtonTransform.DOSizeDelta(new Vector2(0, 501f), 0.3f);
+                cardTransform.DOLocalMoveY(60.3f, 0.3f);
+            }
+        }
     }
 }

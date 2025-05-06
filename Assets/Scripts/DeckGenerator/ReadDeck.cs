@@ -32,6 +32,8 @@ public class ReadDeck : MonoBehaviour
         {
             PullDeck(true);
             yield return new WaitForSeconds(0.05f);
+            PullDeck(false);
+            yield return new WaitForSeconds(0.05f);
         }
     }
 
@@ -45,16 +47,19 @@ public class ReadDeck : MonoBehaviour
         GameObject cardPrefab;
         if (int.TryParse(strings[0], out int number)) //Special cards don't start with a number
         {
-            //cardPrefab = Resources.Load<GameObject>("Prefabs/Cards/Card");
-            cardPrefab = Resources.Load<GameObject>("Prefabs/Cards/UniqueCards" + SelectedCard);
+            print(":D");
+            cardPrefab = Resources.Load<GameObject>("Prefabs/Cards/Card");
         } else
         {
-            cardPrefab = Resources.Load<GameObject>("Prefabs/Cards/UniqueCards" + SelectedCard);
+            print("D:");
+            cardPrefab = Resources.Load<GameObject>("Prefabs/Cards/Card");
+            //cardPrefab = Resources.Load<GameObject>("Prefabs/Cards/UniqueCards" + SelectedCard);
         }
 
-        cardPrefab.name = SelectedCard;
+        print(cardPrefab);
         GameObject card = Instantiate(cardPrefab, transform.position, Quaternion.identity);
         Card cardScript = card.GetComponent<Card>();
+        card.name = SelectedCard;
         if (playerCard)
         {
             cardScript.IsPlayerCard = true;
@@ -67,6 +72,7 @@ public class ReadDeck : MonoBehaviour
             EnemyDeck.Add(card);
             card.transform.SetParent(EnemyDeckRender, false);
         }
+        cardDeck.discardDeck.Add(SelectedCard);
         cardScript.SetupCard();
     }
 }
