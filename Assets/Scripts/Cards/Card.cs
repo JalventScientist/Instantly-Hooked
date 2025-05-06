@@ -20,15 +20,22 @@ public class Card : MonoBehaviour
 
     private void Start()
     {
-        cardText.text = cardType.ToString() + " " + Damage;
+        if(uniqueCard != Uniquecard.None)
+        {
+            cardText.text = cardType.ToString() + " " + uniqueCard.ToString();
+        }
+        else
+        {
+            cardText.text = cardType.ToString() + " " + Damage;
+        }
     }
 
-    public void ApplyCard()
+    public virtual void ApplyCard()
     {
         EvaluateDamage evaluateDamage = FindFirstObjectByType<EvaluateDamage>();
         if (evaluateDamage != null)
         {
-            evaluateDamage.AssignCard(IsPlayerCard, this);
+            evaluateDamage.AssignCard(this);
         }
         else
         {

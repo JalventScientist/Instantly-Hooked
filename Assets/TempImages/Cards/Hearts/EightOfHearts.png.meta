@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      EightOfHearts_0: 498573650755265173
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

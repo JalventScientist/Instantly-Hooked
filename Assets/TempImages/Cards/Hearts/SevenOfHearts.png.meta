@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      SevenOfHearts_0: -2623024415462629652
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
