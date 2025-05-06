@@ -28,7 +28,7 @@ public class Card : MonoBehaviour
         EvaluateDamage evaluateDamage = FindFirstObjectByType<EvaluateDamage>();
         if (evaluateDamage != null)
         {
-            evaluateDamage.AssignCard(IsPlayerCard);
+            evaluateDamage.AssignCard(IsPlayerCard, this);
         }
         else
         {

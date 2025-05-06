@@ -11,7 +11,7 @@ public enum CardType
 public class EvaluateDamage : MonoBehaviour
 {
 
-    Card EnemyCard;
+    List<Card> EnemyCard;
     List<Card> PlayerCard;
 
     Card PlayerBuffCard;
@@ -27,40 +27,28 @@ public class EvaluateDamage : MonoBehaviour
 
     public void EvalDamage()
     {
-        float InitialDamage = 0;
-        float FinalDamage = 0;
+        int InitialDamage = 0;
+        int FinalDamage = 0;
 
-        float PlayerIntendedDamage = 0;
-        float EnemyIntendedDamage = 0;
+        int PlayerIntendedDamage = 0;
+        int EnemyIntendedDamage = 0;
 
-        
+        //Add changes pre-attack if using Heart/Spade King
+        PlayerIntendedDamage = AffectIntended(PlayerBuffCard, EnemyBuffCard, PlayerIntendedDamage);
+        EnemyIntendedDamage = AffectIntended(EnemyBuffCard, PlayerBuffCard, EnemyIntendedDamage);
+
+        InitialDamage = PlayerIntendedDamage - EnemyIntendedDamage;
     }
 
-    public int AffectIntended(Card card, int NumberModify)
+    public int AffectIntended(Card card1, Card card2, int NumberModify)
     {
         int ReturnDamage;
-        if (card != null && card.uniqueCard != Uniquecard.None)
-        {
-            switch (card.uniqueCard)
-            {
-                case Uniquecard.Ace:
 
-                    break;
-                case Uniquecard.King:
+        ReturnDamage = card1 != null & card1.uniqueCard == Uniquecard.King && card1.cardType == CardType.Spade ?
+            NumberModify + 3 : NumberModify;
+        ReturnDamage -= card2 != null & card2.uniqueCard == Uniquecard.King && card2.cardType == CardType.Heart ?
+    NumberModify - 3 : NumberModify;
 
-                    break;
-                case Uniquecard.Queen:
-
-                    break;
-                case Uniquecard.Jack:
-
-                    break;
-                default:
-                    return NumberModify;
-            }
-        } else
-        {
-            return NumberModify;
-        }
+        return ReturnDamage;
     }
 }
