@@ -1,6 +1,7 @@
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public enum Uniquecard{
@@ -23,13 +24,17 @@ public class Card : MonoBehaviour
     Image cardRender;
     RectTransform cardTransform;
     RectTransform ButtonTransform;
+
+    EventTrigger hoverTriggers; //Has to be disabled once clicked
     private void Awake()
     {
         ButtonTransform = transform.GetChild(0).GetComponent<RectTransform>();
+        hoverTriggers = ButtonTransform.GetComponent<EventTrigger>();
     }
 
     public virtual void ApplyCard()
     {
+        hoverTriggers.enabled = false;
         EvaluateDamage evaluateDamage = FindFirstObjectByType<EvaluateDamage>();
         if (evaluateDamage != null)
         {
@@ -51,7 +56,10 @@ public class Card : MonoBehaviour
 
     public void SetHover(bool toggle)
     {
-        Hovering = toggle;
+        if (IsPlayerCard)
+        {
+            Hovering = toggle;
+        }
     }
 
     private void Update()
