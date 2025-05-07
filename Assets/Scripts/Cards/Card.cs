@@ -24,9 +24,11 @@ public class Card : MonoBehaviour
     RectTransform cardTransform;
     RectTransform ButtonTransform;
 
+    [SerializeField] bool DisplayHovering = false;
+
     private void Awake()
     {
-        ButtonTransform = GetComponent<RectTransform>();
+        ButtonTransform = transform.GetChild(0).GetComponent<RectTransform>();
     }
 
     public virtual void ApplyCard()
@@ -44,7 +46,7 @@ public class Card : MonoBehaviour
 
     public void SetupCard()
     {
-        cardTransform = transform.GetChild(0).GetComponent<RectTransform>();
+        cardTransform = transform.GetChild(0).GetChild(0).GetComponent<RectTransform>();
         cardRender = cardTransform.GetComponent<Image>();
         cardRender.sprite = Resources.Load<Sprite>("CardImages/" + transform.name);
         AlreadySetup = true;
@@ -62,8 +64,23 @@ public class Card : MonoBehaviour
 
     private void Update()
     {
+        if (DisplayHovering)
+        {
+            print(Hovering);
+        }
         if (AlreadySetup)
         {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit))
+            {
+                // Check if the hit GameObject is the one this script is attached to
+                Hovering = hit.transform == transform;
+            }
+            else
+            {
+                Hovering = false;
+            }
+
             if (!Hovering)
             {
                 //379.5
