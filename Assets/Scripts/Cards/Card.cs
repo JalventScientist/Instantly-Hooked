@@ -36,6 +36,8 @@ public class Card : MonoBehaviour
     {
         hoverTriggers.enabled = false;
         EvaluateDamage evaluateDamage = FindFirstObjectByType<EvaluateDamage>();
+        GameObject throwCard = Instantiate(Resources.Load<GameObject>("Prefabs/Cards/ThrownCard"), new Vector3(IsPlayerCard ? -10 : 10,0,0), Quaternion.identity);
+        throwCard.GetComponent<ThrowCard>().RenderProperCard(transform.name);
         if (evaluateDamage != null)
         {
             evaluateDamage.AssignCard(this);
