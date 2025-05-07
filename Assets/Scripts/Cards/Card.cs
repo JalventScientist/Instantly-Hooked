@@ -39,6 +39,8 @@ public class Card : MonoBehaviour
     {
         ButtonTransform = transform.GetChild(0).GetComponent<RectTransform>();
         hoverTriggers = ButtonTransform.GetComponent<EventTrigger>();
+        ButtonTransform.position = new Vector3(0, -400, 0);
+        ButtonTransform.DOLocalMoveY(0, 0.3f).SetEase(Ease.OutBack);
     }
 
     public virtual void ApplyCard()

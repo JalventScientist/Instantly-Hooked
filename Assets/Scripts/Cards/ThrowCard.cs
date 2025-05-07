@@ -21,6 +21,6 @@ public class ThrowCard : MonoBehaviour
     public void DestroyCard()
     {
 
-        Destroy(gameObject,0.5f);
+        transform.DOLocalMoveY(-10f, 0.3f).SetEase(Ease.InQuad).OnComplete(()=> Destroy(gameObject));
     }
 }
