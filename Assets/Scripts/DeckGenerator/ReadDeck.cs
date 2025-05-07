@@ -12,6 +12,7 @@ public class ReadDeck : MonoBehaviour
     [SerializeField] RectTransform PlayerDeckRender;
     [SerializeField] RectTransform EnemyDeckRender;
 
+
     private void Start()
     {
         cardDeck = GetComponent<Decks>();

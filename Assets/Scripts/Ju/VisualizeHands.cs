@@ -21,7 +21,7 @@ public class VisualizeHands : MonoBehaviour
     {
         playerHandCenter = GameObject.FindAnyObjectByType<Tag_PlayerHand>().transform;
         enemyHandCenter = GameObject.FindAnyObjectByType<Tag_EnemyHand>().transform;
-        cardBase = Resources.Load<GameObject>("Prefabs\\Cards\\Card.prefab");
+        cardBase = Resources.Load<GameObject>("Prefabs/Cards/Card");
         cardRect = cardBase.GetComponent<RectTransform>();
         if (!TryGetComponent<Hands>(out hands))
         {
@@ -31,7 +31,6 @@ public class VisualizeHands : MonoBehaviour
         {
             hands = GetComponent<Hands>();
         }
-        Debug.Log(hands == null);
     }
     private void Update()
     {
