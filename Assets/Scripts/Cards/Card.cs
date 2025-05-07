@@ -40,9 +40,12 @@ public class Card : MonoBehaviour
             hoverTriggers.enabled = false;
             EvaluateDamage evaluateDamage = FindFirstObjectByType<EvaluateDamage>();
             GameObject throwCard = Instantiate(Resources.Load<GameObject>("Prefabs/Cards/ThrownCard"), new Vector3(IsPlayerCard ? -10 : 10, 0, 0), Quaternion.identity);
-            throwCard.GetComponent<ThrowCard>().RenderProperCard(transform.name);
+            throwCard.GetComponent<ThrowCard>().RenderProperCard(transform.name, IsPlayerCard);
+            ButtonTransform.GetComponent<Button>().enabled = false;
+            ButtonTransform.DOLocalMoveY(-500f,0.3f).SetEase(Ease.InOutQuad);
 
-            if (evaluateDamage != null)
+            /*
+             if (evaluateDamage != null)
             {
                 evaluateDamage.AssignCard(this);
             }
@@ -50,7 +53,9 @@ public class Card : MonoBehaviour
             {
                 Debug.LogError("EvaluateDamage component not found in the scene.");
             }
-        } else
+             */
+        }
+        else
         {
             Debug.LogError("Cards not setup yet. run SetupCard() when loading the card prefab.");
         }
