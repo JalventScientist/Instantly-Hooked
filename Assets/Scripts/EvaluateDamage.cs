@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
+using Unity.VisualScripting;
+using TMPro;
 
 public enum CardType
 {
@@ -10,24 +12,50 @@ public enum CardType
 }
 public class EvaluateDamage : MonoBehaviour
 {
-    List<Card> EnemyCard;
-    List<Card> PlayerCard;
+    List<Card> EnemyCard = new List<Card>();
+    List<Card> PlayerCard = new List<Card>();
 
-    Card PlayerBuffCard;
-    Card EnemyBuffCard;
+    Card PlayerBuffCard = null;
+    Card EnemyBuffCard = null;
 
+    BasicEnemy EnemyScript;
+
+    [SerializeField] TMP_Text PlayerHealthText;
+    [SerializeField] TMP_Text EnemyHealthText;
+
+    int plrHealth = 50;
+    int enemyHealth = 50;
+
+    private void Start()
+    {
+        EnemyScript = GetComponent<BasicEnemy>();
+    }
+
+    private void Update()
+    {
+        if (PlayerHealthText != null)
+        {
+            PlayerHealthText.text = "Player Health" + plrHealth.ToString();
+        }
+        if (EnemyHealthText != null)
+        {
+            EnemyHealthText.text = "Enemy Health" + enemyHealth.ToString();
+        }
+    }
     public void AssignCard(Card targetCard)
     {
         if (targetCard.IsPlayerCard)
         {
             if (targetCard.uniqueCard != Uniquecard.None)
             {
+                print("TargetCard is a unique card somehow");
                 PlayerBuffCard = targetCard;
             }
             else
             {
                 PlayerCard.Add(targetCard);
             }
+            WaitForEval();
         }
         else
         {
@@ -42,37 +70,71 @@ public class EvaluateDamage : MonoBehaviour
         }
     }
 
+    public void ClearEval()
+    {
+        PlayerCard.Clear();
+        EnemyCard.Clear();
+        PlayerBuffCard = null;
+        EnemyBuffCard = null;
+    }
+
+    public void WaitForEval()
+    {
+        EnemyScript.SelectCard();
+    }
+
+    int StackRawDamage(List<Card> cards)
+    {
+        int RawDamage = 0;
+        foreach (Card card in cards)
+        {
+            RawDamage += card.Damage;
+        }
+        return RawDamage;
+    }
+
     public void EvalDamage()
     {
         bool TargetsPlayer = false;
         int InitialDamage = 0;
         int FinalDamage = 0;
 
-        int PlayerIntendedDamage = 0;
-        int EnemyIntendedDamage = 0;
+        int PlayerIntendedDamage = StackRawDamage(PlayerCard);
+        int EnemyIntendedDamage = StackRawDamage(EnemyCard);
 
         //Add changes pre-attack if using Heart/Spade King
         PlayerIntendedDamage = AffectIntended(PlayerBuffCard, EnemyBuffCard, PlayerIntendedDamage);
         EnemyIntendedDamage = AffectIntended(EnemyBuffCard, PlayerBuffCard, EnemyIntendedDamage);
 
         InitialDamage = PlayerIntendedDamage - EnemyIntendedDamage;
-        if((PlayerBuffCard != null && PlayerBuffCard.uniqueCard == Uniquecard.Jack && PlayerBuffCard.cardType == CardType.Heart) && (EnemyBuffCard != null && PlayerBuffCard.uniqueCard == Uniquecard.Jack && EnemyBuffCard.cardType == CardType.Heart))
+        if((!PlayerBuffCard.IsUnityNull() && PlayerBuffCard.uniqueCard == Uniquecard.Jack && PlayerBuffCard.cardType == CardType.Heart) && (!EnemyBuffCard.IsUnityNull() && PlayerBuffCard.uniqueCard == Uniquecard.Jack && EnemyBuffCard.cardType == CardType.Heart))
         {
             InitialDamage = 0;
         }
 
         TargetsPlayer = InitialDamage < 0 ? true : false;
         FinalDamage = Mathf.Abs(InitialDamage);
+        print("InitialDamage " + InitialDamage.ToString());
+        print(FinalDamage.ToString() + " Damage dealt");
+        print("Damage goes to: " + (TargetsPlayer ? "Player" : "Enemy"));
+        if (TargetsPlayer)
+        {
+            plrHealth -= FinalDamage;
+        }
+        else
+        {
+            enemyHealth -= FinalDamage;
+        }
     }
 
     public int AffectIntended(Card card1, Card card2, int NumberModify)
     {
         int ReturnDamage;
-
-        ReturnDamage = card1 != null & card1.uniqueCard == Uniquecard.King && card1.cardType == CardType.Spade ?
+        ReturnDamage = !card1.IsUnityNull() && card1.uniqueCard == Uniquecard.King && card1.cardType == CardType.Spade ?
             NumberModify + 3 : NumberModify;
-        ReturnDamage -= card2 != null & card2.uniqueCard == Uniquecard.King && card2.cardType == CardType.Heart ?
-    NumberModify - 3 : NumberModify;
+        print(!card2.IsUnityNull() && card2.uniqueCard == Uniquecard.King && card2.cardType == CardType.Heart);
+        ReturnDamage = !card2.IsUnityNull() && card2.uniqueCard == Uniquecard.King && card2.cardType == CardType.Heart ?
+    NumberModify - 3 : ReturnDamage;
 
         return ReturnDamage;
     }

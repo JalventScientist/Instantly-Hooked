@@ -27,6 +27,14 @@ public class Card : MonoBehaviour
     RectTransform ButtonTransform;
 
     EventTrigger hoverTriggers; //Has to be disabled once clicked
+
+
+    //Card Matching
+    bool isTied = false;
+    bool PlayerSuit = false;
+
+    public bool UsedCard = false;
+
     private void Awake()
     {
         ButtonTransform = transform.GetChild(0).GetComponent<RectTransform>();
@@ -43,9 +51,8 @@ public class Card : MonoBehaviour
             throwCard.GetComponent<ThrowCard>().RenderProperCard(transform.name, IsPlayerCard);
             ButtonTransform.GetComponent<Button>().enabled = false;
             ButtonTransform.DOLocalMoveY(-500f,0.3f).SetEase(Ease.InOutQuad);
-
-            /*
-             if (evaluateDamage != null)
+            UsedCard = true;
+             if (evaluateDamage != null && uniqueCard == Uniquecard.None)
             {
                 evaluateDamage.AssignCard(this);
             }
@@ -53,7 +60,6 @@ public class Card : MonoBehaviour
             {
                 Debug.LogError("EvaluateDamage component not found in the scene.");
             }
-             */
         }
         else
         {
@@ -67,6 +73,10 @@ public class Card : MonoBehaviour
         cardRender = cardTransform.GetComponent<Image>();
         cardRender.sprite = Resources.Load<Sprite>("CardImages/" + transform.name);
         AlreadySetup = true;
+        if (!IsPlayerCard)
+        {
+            ButtonTransform.GetComponent<Button>().enabled = false;
+        }
 
         List<string> cardData = new List<string>();
 
@@ -91,6 +101,13 @@ public class Card : MonoBehaviour
                 break;
             default:
                 uniqueCard = Uniquecard.None;
+                
+                int Intended = int.Parse(cardData[0]);
+                if(Intended == 0)
+                {
+                    Intended = 10;
+                }
+                Damage = Intended;
                 break;
         }
         switch (cardData[1])
