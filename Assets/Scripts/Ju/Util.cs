@@ -13,7 +13,7 @@ public class Util : MonoBehaviour
         shuffleFrom.Clear();
         for (int i = 0; i < intermediateShuffleDeck.Count; i = 0)
         {
-            int shufflecard = Random.Range(0, intermediateShuffleDeck.Count - 1);
+            int shufflecard = Random.Range(0, intermediateShuffleDeck.Count);
             shuffleTo.Add(intermediateShuffleDeck[shufflecard]);
             intermediateShuffleDeck.RemoveAt(shufflecard);
         }
@@ -32,7 +32,7 @@ public class Util : MonoBehaviour
         }
         for (int i = 0; i < intermediateShuffleDeck.Count; i = 0)
         {
-            int shufflecard = Random.Range(0, intermediateShuffleDeck.Count - 1);
+            int shufflecard = Random.Range(0, intermediateShuffleDeck.Count);
             shuffleTo.Add(intermediateShuffleDeck[shufflecard]);
             intermediateShuffleDeck.RemoveAt(shufflecard);
         }
@@ -42,5 +42,10 @@ public class Util : MonoBehaviour
     {
         drawTo.Add(drawFrom[0]);
         drawFrom.RemoveAt(0);
+    }
+    static public void DrawFromDeckIntoHand(List<string> drawFrom, List<string> drawTo, int drawFromIndex)
+    {
+        drawTo.Add(drawFrom[drawFromIndex]);
+        drawFrom.RemoveAt(drawFromIndex);
     }
 }

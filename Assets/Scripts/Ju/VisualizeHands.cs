@@ -3,6 +3,7 @@ using UnityEditorInternal;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.VisualScripting;
+using UnityEngine.UI;
 
 public class VisualizeHands : MonoBehaviour
 {
@@ -11,7 +12,7 @@ public class VisualizeHands : MonoBehaviour
     private GameObject cardBase;
     private RectTransform cardRect;
 
-    private List<GameObject> visualPlayerHand = new List<GameObject>();
+    [SerializeField] private List<GameObject> visualPlayerHand = new List<GameObject>();
     private List<GameObject> visualEnemyHand = new List<GameObject>();
 
     private Transform playerHandCenter;
@@ -34,13 +35,30 @@ public class VisualizeHands : MonoBehaviour
     }
     private void Update()
     {
-        /*bool isNewPlayerHand = visualPlayerHand.Count != hands.playerHand.Count;
-        if (isNewPlayerHand)
+        RenderHand(visualPlayerHand, hands.playerHand, playerHandCenter, true);
+        RenderHand(visualEnemyHand, hands.enemyHand, enemyHandCenter);
+    }
+
+    private void RenderHand(List<GameObject> visualHandList, List<string> textHandList, Transform center, bool isPlayerHand = false)
+    {
+        bool isNewHand = visualHandList.Count != textHandList.Count;
+        if (isNewHand)
         {
-            for (int i = 0; i < visualPlayerHand.Count; i++)
+            foreach (GameObject card in visualHandList)
+                Destroy(card);
+            visualHandList.Clear();
+            for (int i = 0; i < textHandList.Count; i++)
             {
-                Instantiate(cardBase, playerHandCenter.position + new Vector3(cardRect.rect.width / 2 + (visualPlayerHand.Count / 2 - visualPlayerHand.Count) / (1 / cardSpacing), 0, 0), new Quaternion(0, 0, 0, 0));
+                GameObject card = Instantiate(cardBase, center.position + new Vector3(cardRect.rect.width / 2 + ((i - textHandList.Count / 2) / (1 / cardSpacing)), 0, 0), new Quaternion(0, 0, 0, 0), center);
+                card.name = textHandList[i];
+                Card cardCard = card.GetComponent<Card>();
+                if (isPlayerHand)
+                {
+                    cardCard.IsPlayerCard = true;
+                }
+                cardCard.SetupCard();
+                visualHandList.Add(card);
             }
-        }*/
+        }
     }
 }
