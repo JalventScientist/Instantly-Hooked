@@ -268,6 +268,7 @@ GameObject:
   - component: {fileID: 1109852681}
   - component: {fileID: 1109852684}
   - component: {fileID: 1109852683}
+  - component: {fileID: 1109852685}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -384,6 +385,19 @@ MonoBehaviour:
   startingHand: 3
   playerHand: []
   enemyHand: []
+--- !u!114 &1109852685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1109852680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b59e7e4487d7b848b3e31413537c3a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardSpacing: 0.5
 --- !u!1 &1577064888
 GameObject:
   m_ObjectHideFlags: 0
@@ -393,6 +407,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1577064889}
+  - component: {fileID: 1577064890}
   m_Layer: 0
   m_Name: EnemyHand
   m_TagString: Untagged
@@ -415,6 +430,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1577064890
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1577064888}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5dba5cbc29120db42b626150b1861589, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1777428892
 GameObject:
   m_ObjectHideFlags: 0
@@ -424,6 +451,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1777428893}
+  - component: {fileID: 1777428894}
   m_Layer: 0
   m_Name: PlayerHand
   m_TagString: Untagged
@@ -446,6 +474,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1777428894
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1777428892}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5da4a71ff0465444f83a6872ea9cb22a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
