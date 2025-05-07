@@ -53,7 +53,7 @@ public class BasicEnemy : MonoBehaviour
     public void SelectCard(bool SpecialAllowed = true)
     {
         print("Selecting Card");
-        int SpecialOrNormal = SpecialCardInDeck && SpecialAllowed ? 0 : 1;
+        int SpecialOrNormal = SpecialCardInDeck && SpecialAllowed ? Random.Range(0,4) : 1;
 
         if (SpecialOrNormal > 0) //Use a normal card
         {

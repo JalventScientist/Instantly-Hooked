@@ -19,6 +19,7 @@ public class EvaluateDamage : MonoBehaviour
     Card EnemyBuffCard = null;
 
     BasicEnemy EnemyScript;
+    ReadDeck ReadDeckScript;
 
     [SerializeField] TMP_Text PlayerHealthText;
     [SerializeField] TMP_Text EnemyHealthText;
@@ -29,6 +30,7 @@ public class EvaluateDamage : MonoBehaviour
     private void Start()
     {
         EnemyScript = GetComponent<BasicEnemy>();
+        ReadDeckScript = GetComponent<ReadDeck>();
     }
 
     private void Update()
@@ -125,6 +127,7 @@ public class EvaluateDamage : MonoBehaviour
         {
             enemyHealth -= FinalDamage;
         }
+        ReadDeckScript.Regen();
     }
 
     public int AffectIntended(Card card1, Card card2, int NumberModify)
