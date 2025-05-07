@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.VisualScripting;
 using UnityEngine.UI;
+using UnityEditor;
 
 public class VisualizeHands : MonoBehaviour
 {
@@ -47,9 +48,14 @@ public class VisualizeHands : MonoBehaviour
             foreach (GameObject card in visualHandList)
                 Destroy(card);
             visualHandList.Clear();
+                center.rotation = new Quaternion(0, 0, 0.03f, 1);
             for (int i = 0; i < textHandList.Count; i++)
             {
-                GameObject card = Instantiate(cardBase, center.position + new Vector3(cardRect.rect.width / 2 + ((i - textHandList.Count / 2) / (1 / cardSpacing)), 0, 0), new Quaternion(0, 0, 0, 0), center);
+                GameObject card;
+                if (isPlayerHand)
+                    card = Instantiate(cardBase, center.position + new Vector3(cardRect.rect.width / 2 + ((i - textHandList.Count / 2) / (1 / cardSpacing)), 0, 0), center.rotation, center);
+                else
+                    card = Instantiate(cardBase, center.position + new Vector3(cardRect.rect.width / 2 + ((i - textHandList.Count / 2) / (1 / cardSpacing)), 0, 0), center.rotation, center);
                 card.name = textHandList[i];
                 Card cardCard = card.GetComponent<Card>();
                 if (isPlayerHand)
@@ -59,6 +65,10 @@ public class VisualizeHands : MonoBehaviour
                 cardCard.SetupCard();
                 visualHandList.Add(card);
             }
+            if (isPlayerHand)
+                center.rotation = new Quaternion(0, 0, 0, 0);
+            else
+                center.rotation = new Quaternion(0, 0, 1, 0);
         }
     }
 }

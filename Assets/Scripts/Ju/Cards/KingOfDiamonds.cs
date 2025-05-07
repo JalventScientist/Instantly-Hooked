@@ -4,7 +4,7 @@ public class KingOfDiamonds : Card
 {
     private Hands hands;
     private Decks decks;
-    [SerializeField] private int drawAmount;
+    public int drawAmount;
 
     private void Start()
     {
@@ -13,6 +13,7 @@ public class KingOfDiamonds : Card
     }
     public override void ApplyCard()
     {
+        base.ApplyCard();
         if (IsPlayerCard)
             for (int i = 0; i < drawAmount; i++)
                 Util.DrawFromDeckIntoHand(decks.drawDeck, hands.playerHand);

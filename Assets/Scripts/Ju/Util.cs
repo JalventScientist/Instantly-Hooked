@@ -40,11 +40,15 @@ public class Util : MonoBehaviour
 
     static public void DrawFromDeckIntoHand(List<string> drawFrom, List<string> drawTo)
     {
+        if (drawFrom.Count == 0)
+            return;
         drawTo.Add(drawFrom[0]);
         drawFrom.RemoveAt(0);
     }
     static public void DrawFromDeckIntoHand(List<string> drawFrom, List<string> drawTo, int drawFromIndex)
     {
+        if (drawFrom.Count == 0)
+            return;
         drawTo.Add(drawFrom[drawFromIndex]);
         drawFrom.RemoveAt(drawFromIndex);
     }

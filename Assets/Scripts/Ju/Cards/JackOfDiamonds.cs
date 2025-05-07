@@ -4,7 +4,7 @@ public class JackOfDiamonds : Card
 {
     private Hands hands;
     private Decks decks;
-    [SerializeField] private int drawAmount;
+    public int drawAmount;
 
     private void Start()
     {
@@ -14,6 +14,7 @@ public class JackOfDiamonds : Card
 
     public override void ApplyCard()
     {
+        base.ApplyCard();
         if (IsPlayerCard)
         {
             for (int i = 0; i < hands.playerHand.Count; i++)

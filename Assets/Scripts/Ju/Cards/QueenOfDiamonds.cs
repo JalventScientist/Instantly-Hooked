@@ -4,7 +4,7 @@ public class QueenOfDiamonds : Card
 {
     private Hands hands;
     private Decks decks;
-    [SerializeField] private int discardAmount;
+    public int discardAmount;
 
     private void Start()
     {
@@ -14,6 +14,7 @@ public class QueenOfDiamonds : Card
 
     public override void ApplyCard()
     {
+        base.ApplyCard();
         if (IsPlayerCard)
             for (int i = 0; i < discardAmount; i++)
                 Util.DrawFromDeckIntoHand(hands.enemyHand, decks.discardDeck, Random.Range(0, hands.enemyHand.Count));

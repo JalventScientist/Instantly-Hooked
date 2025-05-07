@@ -14,6 +14,7 @@ public class AceOfDiamonds : Card
     }
     public override void ApplyCard()
     {
+        base.ApplyCard();
         Util.ShuffleFromDeckIntoDeck(decks.drawDeck, decks.drawDeck);
         if (IsPlayerCard)
             while (hands.playerHand.Count > 0)
