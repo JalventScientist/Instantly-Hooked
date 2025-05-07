@@ -17,4 +17,10 @@ public class ThrowCard : MonoBehaviour
         transform.DOLocalRotate(new Vector3(0, 0, Random.Range(0f, 360f)), 0.3f).SetEase(Ease.OutQuad);
         yield return null;
     }
+
+    public void DestroyCard()
+    {
+
+        Destroy(gameObject,0.5f);
+    }
 }
