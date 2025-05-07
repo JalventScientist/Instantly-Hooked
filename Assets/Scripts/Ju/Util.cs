@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Util : MonoBehaviour
 {
-    public void ShuffleFromDeckIntoDeck(List<string> shuffleFrom, List<string> shuffleTo)
+    static public void ShuffleFromDeckIntoDeck(List<string> shuffleFrom, List<string> shuffleTo)
     {
         List<string> intermediateShuffleDeck = new List<string>();
         foreach (string card in shuffleFrom)
@@ -19,7 +19,7 @@ public class Util : MonoBehaviour
         }
     }
 
-    public void ShuffleFromDeckIntoDeck(List<string>[] shuffleFrom, List<string> shuffleTo)
+    static public void ShuffleFromDeckIntoDeck(List<string>[] shuffleFrom, List<string> shuffleTo)
     {
         List<string> intermediateShuffleDeck = new List<string>();
         foreach (List<string> cards in shuffleFrom)
@@ -36,5 +36,11 @@ public class Util : MonoBehaviour
             shuffleTo.Add(intermediateShuffleDeck[shufflecard]);
             intermediateShuffleDeck.RemoveAt(shufflecard);
         }
+    }
+
+    static public void DrawFromDeckIntoHand(List<string> drawFrom, List<string> drawTo)
+    {
+        drawTo.Add(drawFrom[0]);
+        drawFrom.RemoveAt(0);
     }
 }
