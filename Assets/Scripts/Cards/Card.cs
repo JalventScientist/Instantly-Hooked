@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public enum Uniquecard{
     Ace,
@@ -34,17 +35,24 @@ public class Card : MonoBehaviour
 
     public virtual void ApplyCard()
     {
-        hoverTriggers.enabled = false;
-        EvaluateDamage evaluateDamage = FindFirstObjectByType<EvaluateDamage>();
-        GameObject throwCard = Instantiate(Resources.Load<GameObject>("Prefabs/Cards/ThrownCard"), new Vector3(IsPlayerCard ? -10 : 10,0,0), Quaternion.identity);
-        throwCard.GetComponent<ThrowCard>().RenderProperCard(transform.name);
-        if (evaluateDamage != null)
+        if (AlreadySetup)
         {
-            evaluateDamage.AssignCard(this);
-        }
-        else
+            hoverTriggers.enabled = false;
+            EvaluateDamage evaluateDamage = FindFirstObjectByType<EvaluateDamage>();
+            GameObject throwCard = Instantiate(Resources.Load<GameObject>("Prefabs/Cards/ThrownCard"), new Vector3(IsPlayerCard ? -10 : 10, 0, 0), Quaternion.identity);
+            throwCard.GetComponent<ThrowCard>().RenderProperCard(transform.name);
+
+            if (evaluateDamage != null)
+            {
+                evaluateDamage.AssignCard(this);
+            }
+            else
+            {
+                Debug.LogError("EvaluateDamage component not found in the scene.");
+            }
+        } else
         {
-            Debug.LogError("EvaluateDamage component not found in the scene.");
+            Debug.LogError("Cards not setup yet. run SetupCard() when loading the card prefab.");
         }
     }
 
@@ -54,6 +62,50 @@ public class Card : MonoBehaviour
         cardRender = cardTransform.GetComponent<Image>();
         cardRender.sprite = Resources.Load<Sprite>("CardImages/" + transform.name);
         AlreadySetup = true;
+
+        List<string> cardData = new List<string>();
+
+        foreach(char c in transform.name)
+        {
+            cardData.Add(c.ToString());
+        }
+
+        switch (cardData[0])
+        {
+            case "A":
+                uniqueCard = Uniquecard.Ace;
+                break;
+            case "K":
+                uniqueCard = Uniquecard.King;
+                break;
+            case "Q":
+                uniqueCard = Uniquecard.Queen;
+                break;
+            case "J":
+                uniqueCard = Uniquecard.Jack;
+                break;
+            default:
+                uniqueCard = Uniquecard.None;
+                break;
+        }
+        switch (cardData[1])
+        {
+            case "H":
+                cardType = CardType.Heart;
+                break;
+            case "S":
+                cardType = CardType.Spade;
+                break;
+            case "D":
+                cardType = CardType.Diamond;
+                break;
+            case "C":
+                cardType = CardType.Club;
+                break;
+            default:
+                Debug.LogError("Card Type not found");
+                break;
+        }
     }
 
     public void SetHover(bool toggle)
