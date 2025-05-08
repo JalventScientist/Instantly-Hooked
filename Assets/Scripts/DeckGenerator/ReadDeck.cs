@@ -155,7 +155,18 @@ public class ReadDeck : MonoBehaviour
         }
         PlayerDeck.Clear();
         EnemyDeck.Clear();
-        Util.ShuffleFromDeckIntoDeck(cardDeck.drawAndDiscardDeck, cardDeck.drawDeck);
+        List<string> tempDeck = new List<string>();
+        foreach (string card in cardDeck.drawDeck)
+        {
+            tempDeck.Add(card);
+        }
+        foreach (string card in cardDeck.discardDeck)
+        {
+            tempDeck.Add(card);
+        }
+        cardDeck.drawDeck.Clear();
+        cardDeck.discardDeck.Clear();
+        Util.ShuffleFromDeckIntoDeck(tempDeck, cardDeck.drawDeck);
         StartCoroutine(GetBasePull());
     }
 
