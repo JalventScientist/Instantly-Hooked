@@ -13,6 +13,7 @@ public class AceDiamonds : Card
     public override void ApplyCard()
     {
         base.ApplyCard();
+        deck = FindFirstObjectByType<ReadDeck>();
         StartCoroutine(deck.RenewDecks());
     }
 }

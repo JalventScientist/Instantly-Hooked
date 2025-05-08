@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      KingOfClubs_0: 644004847215745279
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

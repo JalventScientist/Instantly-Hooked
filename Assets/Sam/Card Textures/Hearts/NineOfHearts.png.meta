@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      NineOfHearts_0: 1723675220196789323
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -18,6 +18,10 @@ public class ReadDeck : MonoBehaviour
 
     bool Reshuffling = false;
 
+    //DELAYS
+    WaitForSeconds unloadCards = new WaitForSeconds(0.05f);
+    WaitForSeconds DefaultDelay = new WaitForSeconds(0.5f);
+
     private void Start()
     {
         cardDeck = GetComponent<Decks>();
@@ -33,19 +37,19 @@ public class ReadDeck : MonoBehaviour
 
     IEnumerator GetBasePull()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return DefaultDelay;
         for(int i = 0; i < MaxPlayerDeck; i++)
         {
             PullDeck(true);
-            yield return new WaitForSeconds(0.05f);
+            yield return unloadCards;
         }
         for (int i = 0; i < MaxEnemyDeck; i++)
         {
             PullDeck(false);
-            yield return new WaitForSeconds(0.05f);
+            yield return unloadCards;
         }
-        FindFirstObjectByType<BasicEnemy>().GetDeck();
         CheckDecks();
+        FindFirstObjectByType<BasicEnemy>().GetDeck();
         SetCardActivity();
         Reshuffling = false;
     }
@@ -68,13 +72,14 @@ public class ReadDeck : MonoBehaviour
         for (int i = 0; i < count; i++)
         {
             PullDeck(ForPlayer);
-            yield return new WaitForSeconds(0.05f);
+            yield return unloadCards;
         }
+        CheckDecks();
         if (!ForPlayer)
         {
             FindFirstObjectByType<BasicEnemy>().GetDeck();
         }
-        CheckDecks();
+
     }
 
     public void PullDeck(bool playerCard)
@@ -139,11 +144,11 @@ public class ReadDeck : MonoBehaviour
     public IEnumerator RenewDecks()
     {
         SetCardActivity(false);
-        yield return new WaitForSeconds(0.5f);
+        yield return unloadCards;
         foreach (GameObject card in PlayerDeck)
         {
             StartCoroutine(card.GetComponent<Card>().ForceRemoveCards()); ;
-            yield return new WaitForSeconds(0.01f);
+            yield return unloadCards;
         }
         for (int i = 0; i < EnemyDeck.Count; i++)
         {
@@ -151,7 +156,7 @@ public class ReadDeck : MonoBehaviour
             {
                 StartCoroutine(cardScript.ForceRemoveCards());
             }
-            yield return new WaitForSeconds(0.01f);
+            yield return unloadCards;
         }
         PlayerDeck.Clear();
         EnemyDeck.Clear();
@@ -170,8 +175,39 @@ public class ReadDeck : MonoBehaviour
         StartCoroutine(GetBasePull());
     }
 
+    void DiscardToDraw()
+    {
+        List<string> tempDeck = new List<string>();
+        foreach (string card in cardDeck.discardDeck)
+        {
+            tempDeck.Add(card);
+        }
+        for (int i = 0; i < tempDeck.Count; i++)
+        {
+        }
+        foreach (string card in tempDeck)
+        {
+            if(PlayerDeck.Exists(c => c.name == card) || EnemyDeck.Exists(c => c.name == card)) //check if card isn't in use by enemy or player to prevent accidental duplication
+            {
+                continue;
+            } else
+            {
+                cardDeck.discardDeck.Remove(card);
+            }
+        }
+    }
+
     void CheckDecks()// Prevents that a deck has only Special cards (unless the player has Diamond Ace, King or jack since those change the decks)
     {
+        int TotalShortage = PlayerDeck.Count + EnemyDeck.Count - (MaxEnemyDeck + MaxPlayerDeck); //calculate how many cards need to be pulled
+
+        if(TotalShortage > cardDeck.drawDeck.Count)
+        {
+            print("Too few cards to draw. Moving discard pile to draw.");
+            DiscardToDraw();
+            return;
+        }
+
         bool PlayerHasOnlySpecial = true;
         bool EnemyHasOnlySpecial = true;
 
@@ -222,17 +258,13 @@ public class ReadDeck : MonoBehaviour
                 Reshuffling = true;
                 StartCoroutine(RenewDecks());
             }
-        } else
-        {
-            SetCardActivity(true);
         }
     }
 
 
-
     IEnumerator UpdateDecksAnimated(bool GetNewCards = true)
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return DefaultDelay;
         SetCardActivity(false);
         ThrowCard[] ThrownCards = FindObjectsByType<ThrowCard>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         foreach(ThrowCard card in ThrownCards)
@@ -263,7 +295,7 @@ public class ReadDeck : MonoBehaviour
     }
 
     void UpdateCards()
-    {
+    { 
         PlayerDeck.RemoveAll(card => card == null || card.Equals(null));
         EnemyDeck.RemoveAll(card => card == null || card.Equals(null));
         if (PlayerDeck.Count < MaxPlayerDeck)

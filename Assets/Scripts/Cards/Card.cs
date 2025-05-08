@@ -37,12 +37,22 @@ public class Card : MonoBehaviour
     public bool UsedCard = false;
     public bool TrulyActive = false;
 
+    [HideInInspector] public TMP_Text InfoText;
+
+    [Tooltip("Only used by special cards. Displays what the effect does.")]
+    public string EffectText = "I do special stuff";
+
     private void Awake()
     {
         ButtonTransform = transform.GetChild(0).GetComponent<RectTransform>();
         hoverTriggers = ButtonTransform.GetComponent<EventTrigger>();
         ButtonTransform.position = new Vector3(0, -400, 0);
         ButtonTransform.DOLocalMoveY(0, 0.3f).SetEase(Ease.OutBack);
+        if(isSpecialCondition())
+        {
+            InfoText = transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<TMP_Text>();
+            InfoText.text = EffectText;
+        }
     }
 
     public IEnumerator ForceRemoveCards() //Hide cards for reshuffle
@@ -68,15 +78,16 @@ public class Card : MonoBehaviour
             {
                 evaluateDamage.AssignCard(this);
             }
-            else
-            {
-                Debug.LogWarning("Evaluate Damage not found | This can also be triggered by special cards.");
-            }
         }
-        else
+    }
+
+    bool isSpecialCondition()
+    {
+        if(uniqueCard == Uniquecard.Ace && cardType == CardType.Diamond)
         {
-            Debug.LogError("Cards not setup yet. run SetupCard() when loading the card prefab.");
+            return true;
         }
+        return false;
     }
 
     public void SetupCard()
@@ -160,11 +171,19 @@ public class Card : MonoBehaviour
                 //379.5
                 ButtonTransform.DOSizeDelta(new Vector2(0, 379.5f), 0.3f);
                 cardTransform.DOLocalMoveY(0, 0.3f);
+                if (isSpecialCondition())
+                {
+                    InfoText.DOColor(new Color(1, 1, 1, 0), 0.3f);
+                }
             }
             else
             {
                 ButtonTransform.DOSizeDelta(new Vector2(0, 501f), 0.3f);
                 cardTransform.DOLocalMoveY(60.3f, 0.3f);
+                if (isSpecialCondition())
+                {
+                    InfoText.DOColor(new Color(1, 1, 1, 1), 0.3f);
+                }
             }
         }
     }

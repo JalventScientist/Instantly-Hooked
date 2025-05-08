@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      FourOfHearts_0: 8230569700206595327
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

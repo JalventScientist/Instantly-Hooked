@@ -24,8 +24,11 @@ public class EvaluateDamage : MonoBehaviour
     [SerializeField] TMP_Text PlayerHealthText;
     [SerializeField] TMP_Text EnemyHealthText;
 
-    int plrHealth = 50;
-    int enemyHealth = 50;
+    public int plrHealth = 50;
+    public int enemyHealth = 50;
+
+    public bool PlayerHasExtraMove = false;
+    public bool EnemyHasExtraMove = false;
 
     private void Start()
     {
