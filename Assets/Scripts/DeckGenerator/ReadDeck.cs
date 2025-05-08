@@ -50,7 +50,7 @@ public class ReadDeck : MonoBehaviour
         Reshuffling = false;
     }
 
-    void SetCardActivity(bool toggle = true) //Toggles if cards can be used or not to prevent premature clicks
+    public void SetCardActivity(bool toggle = true) //Toggles if cards can be used or not to prevent premature clicks
     {
         foreach (GameObject card in PlayerDeck)
         {
@@ -98,7 +98,7 @@ public class ReadDeck : MonoBehaviour
             try
             {
                 print("Trying to receive");
-                cardPrefab = Resources.Load<GameObject>("Prefabs/Cards/UniqueCards/AD");
+                cardPrefab = Resources.Load<GameObject>("Prefabs/Cards/UniqueCards/" + SelectedCard);
                 if (cardPrefab.IsUnityNull())
                 {
                     Debug.LogError("Card prefab not found: " + SelectedCard);
@@ -114,7 +114,6 @@ public class ReadDeck : MonoBehaviour
         }
         GameObject card = Instantiate(cardPrefab, transform.position, Quaternion.identity);
         Card cardScript = card.GetComponent<Card>();
-        print("has Card script:" + cardScript.IsUnityNull());
         card.name = SelectedCard;
         if (playerCard)
         {
@@ -146,7 +145,6 @@ public class ReadDeck : MonoBehaviour
             StartCoroutine(card.GetComponent<Card>().ForceRemoveCards()); ;
             yield return new WaitForSeconds(0.01f);
         }
-        print("Starting to clear enemy cards which sums up to " + EnemyDeck.Count + " cards");
         for (int i = 0; i < EnemyDeck.Count; i++)
         {
             if (EnemyDeck[i].TryGetComponent<Card>(out Card cardScript))
@@ -155,12 +153,9 @@ public class ReadDeck : MonoBehaviour
             }
             yield return new WaitForSeconds(0.01f);
         }
-        print("Cleared enemy cards");
         PlayerDeck.Clear();
         EnemyDeck.Clear();
-        print("Cleared List");
-        Util.ShuffleFromDeckIntoDeck(cardDeck.discardDeck, cardDeck.drawDeck);
-        print("Shuffled and pulling");
+        Util.ShuffleFromDeckIntoDeck(cardDeck.drawAndDiscardDeck, cardDeck.drawDeck);
         StartCoroutine(GetBasePull());
     }
 
@@ -216,6 +211,9 @@ public class ReadDeck : MonoBehaviour
                 Reshuffling = true;
                 StartCoroutine(RenewDecks());
             }
+        } else
+        {
+            SetCardActivity(true);
         }
     }
 

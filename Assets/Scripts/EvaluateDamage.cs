@@ -81,6 +81,7 @@ public class EvaluateDamage : MonoBehaviour
 
     public void WaitForEval()
     {
+        ReadDeckScript.SetCardActivity(false);
         EnemyScript.SelectCard();
     }
 

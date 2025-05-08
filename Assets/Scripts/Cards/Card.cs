@@ -55,7 +55,7 @@ public class Card : MonoBehaviour
 
     public virtual void ApplyCard()
     {
-        if (AlreadySetup)
+        if (AlreadySetup && (TrulyActive || !IsPlayerCard))
         {
             hoverTriggers.enabled = false;
             EvaluateDamage evaluateDamage = FindFirstObjectByType<EvaluateDamage>();
