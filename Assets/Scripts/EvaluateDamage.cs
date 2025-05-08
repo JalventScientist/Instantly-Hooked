@@ -50,7 +50,6 @@ public class EvaluateDamage : MonoBehaviour
         {
             if (targetCard.uniqueCard != Uniquecard.None)
             {
-                print("TargetCard is a unique card somehow");
                 PlayerBuffCard = targetCard;
             }
             else
@@ -116,9 +115,6 @@ public class EvaluateDamage : MonoBehaviour
 
         TargetsPlayer = InitialDamage < 0 ? true : false;
         FinalDamage = Mathf.Abs(InitialDamage);
-        print("InitialDamage " + InitialDamage.ToString());
-        print(FinalDamage.ToString() + " Damage dealt");
-        print("Damage goes to: " + (TargetsPlayer ? "Player" : "Enemy"));
         if (TargetsPlayer)
         {
             plrHealth -= FinalDamage;

@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using System.Collections;
 
 public enum Uniquecard{
     Ace,
@@ -20,7 +21,7 @@ public class Card : MonoBehaviour
     public Uniquecard uniqueCard;
 
     bool Hovering = false;
-    bool AlreadySetup = false;
+    public bool AlreadySetup = false;
 
     Image cardRender;
     RectTransform cardTransform;
@@ -34,6 +35,7 @@ public class Card : MonoBehaviour
     bool PlayerSuit = false;
 
     public bool UsedCard = false;
+    public bool TrulyActive = false;
 
     private void Awake()
     {
@@ -41,6 +43,14 @@ public class Card : MonoBehaviour
         hoverTriggers = ButtonTransform.GetComponent<EventTrigger>();
         ButtonTransform.position = new Vector3(0, -400, 0);
         ButtonTransform.DOLocalMoveY(0, 0.3f).SetEase(Ease.OutBack);
+    }
+
+    public IEnumerator ForceRemoveCards() //Hide cards for reshuffle
+    {
+        TrulyActive = false;
+        ButtonTransform.GetComponent<Button>().enabled = false;
+        ButtonTransform.DOLocalMoveY(-500f, 0.3f).SetEase(Ease.InOutQuad).OnComplete(()=> Destroy(gameObject));
+        yield return null;
     }
 
     public virtual void ApplyCard()
@@ -60,7 +70,7 @@ public class Card : MonoBehaviour
             }
             else
             {
-                Debug.LogError("EvaluateDamage component not found in the scene.");
+                Debug.LogWarning("Evaluate Damage not found | This can also be triggered by special cards.");
             }
         }
         else
@@ -142,7 +152,7 @@ public class Card : MonoBehaviour
 
     private void Update()
     {
-        if (AlreadySetup)
+        if (AlreadySetup && TrulyActive)
         {
 
             if (!Hovering)

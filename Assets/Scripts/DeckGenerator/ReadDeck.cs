@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ReadDeck : MonoBehaviour
@@ -14,6 +15,8 @@ public class ReadDeck : MonoBehaviour
 
     public int MaxPlayerDeck = 5;
     public int MaxEnemyDeck = 5;
+
+    bool Reshuffling = false;
 
     private void Start()
     {
@@ -31,15 +34,32 @@ public class ReadDeck : MonoBehaviour
     IEnumerator GetBasePull()
     {
         yield return new WaitForSeconds(0.5f);
-        for(int i = 0; i < 5; i++)
+        for(int i = 0; i < MaxPlayerDeck; i++)
         {
             PullDeck(true);
             yield return new WaitForSeconds(0.05f);
+        }
+        for (int i = 0; i < MaxEnemyDeck; i++)
+        {
             PullDeck(false);
             yield return new WaitForSeconds(0.05f);
         }
         FindFirstObjectByType<BasicEnemy>().GetDeck();
+        CheckDecks();
+        SetCardActivity();
+        Reshuffling = false;
+    }
 
+    void SetCardActivity(bool toggle = true) //Toggles if cards can be used or not to prevent premature clicks
+    {
+        foreach (GameObject card in PlayerDeck)
+        {
+            card.GetComponent<Card>().TrulyActive = toggle;
+        }
+        foreach (GameObject card in EnemyDeck)
+        {
+            card.GetComponent<Card>().TrulyActive = toggle;
+        }
     }
 
     public IEnumerator PullOneSide(int count, bool ForPlayer)
@@ -54,6 +74,7 @@ public class ReadDeck : MonoBehaviour
         {
             FindFirstObjectByType<BasicEnemy>().GetDeck();
         }
+        CheckDecks();
     }
 
     public void PullDeck(bool playerCard)
@@ -62,18 +83,38 @@ public class ReadDeck : MonoBehaviour
         SelectedCard = cardDeck.drawDeck[cardDeck.drawDeck.Count - 1];
 
         cardDeck.drawDeck.Remove(SelectedCard);
-        string[] strings = SelectedCard.Split('_');
+        List<string> strings = new List<string>();
+        foreach(char c in SelectedCard)
+        {
+            strings.Add(c.ToString());
+        }
         GameObject cardPrefab;
+        print(strings[0] + " of " + SelectedCard);
         if (int.TryParse(strings[0], out int number)) //Special cards don't start with a number
         {
             cardPrefab = Resources.Load<GameObject>("Prefabs/Cards/Card");
         } else
         {
-            cardPrefab = Resources.Load<GameObject>("Prefabs/Cards/Card");
-            //cardPrefab = Resources.Load<GameObject>("Prefabs/Cards/UniqueCards" + SelectedCard);
+            try
+            {
+                print("Trying to receive");
+                cardPrefab = Resources.Load<GameObject>("Prefabs/Cards/UniqueCards/AD");
+                if (cardPrefab.IsUnityNull())
+                {
+                    Debug.LogError("Card prefab not found: " + SelectedCard);
+                    cardPrefab = Resources.Load<GameObject>("Prefabs/Cards/Card");
+                }
+            }
+            catch
+            {
+                Debug.LogError("Card is not found, or card format is invalid: " + SelectedCard);
+                cardPrefab = Resources.Load<GameObject>("Prefabs/Cards/Card");
+            }
+            
         }
         GameObject card = Instantiate(cardPrefab, transform.position, Quaternion.identity);
         Card cardScript = card.GetComponent<Card>();
+        print("has Card script:" + cardScript.IsUnityNull());
         card.name = SelectedCard;
         if (playerCard)
         {
@@ -96,11 +137,95 @@ public class ReadDeck : MonoBehaviour
         StartCoroutine(UpdateDecksAnimated());
     }
 
-    IEnumerator UpdateDecksAnimated()
+    public IEnumerator RenewDecks()
+    {
+        SetCardActivity(false);
+        yield return new WaitForSeconds(0.5f);
+        foreach (GameObject card in PlayerDeck)
+        {
+            StartCoroutine(card.GetComponent<Card>().ForceRemoveCards()); ;
+            yield return new WaitForSeconds(0.01f);
+        }
+        print("Starting to clear enemy cards which sums up to " + EnemyDeck.Count + " cards");
+        for (int i = 0; i < EnemyDeck.Count; i++)
+        {
+            if (EnemyDeck[i].TryGetComponent<Card>(out Card cardScript))
+            {
+                StartCoroutine(cardScript.ForceRemoveCards());
+            }
+            yield return new WaitForSeconds(0.01f);
+        }
+        print("Cleared enemy cards");
+        PlayerDeck.Clear();
+        EnemyDeck.Clear();
+        print("Cleared List");
+        Util.ShuffleFromDeckIntoDeck(cardDeck.discardDeck, cardDeck.drawDeck);
+        print("Shuffled and pulling");
+        StartCoroutine(GetBasePull());
+    }
+
+    void CheckDecks()// Prevents that a deck has only Special cards (unless the player has Diamond Ace, King or jack since those change the decks)
+    {
+        bool PlayerHasOnlySpecial = true;
+        bool EnemyHasOnlySpecial = true;
+
+        foreach (GameObject card in PlayerDeck)
+        {
+            switch (card.name)
+            {
+                case "AD":
+                    PlayerHasOnlySpecial = false;
+                    break;
+                case "AK":
+                    PlayerHasOnlySpecial = false;
+                    break;
+                case "AJ":
+                    PlayerHasOnlySpecial = false;
+                    break;
+            }
+            if(card.GetComponent<Card>().uniqueCard == Uniquecard.None && PlayerHasOnlySpecial) //Incase the player has a normal card
+            {
+                PlayerHasOnlySpecial = false;
+            }
+        }
+
+        foreach (GameObject card in EnemyDeck)
+        {
+            switch (card.name)
+            {
+                case "AD":
+                    EnemyHasOnlySpecial = false;
+                    break;
+                case "AK":
+                    EnemyHasOnlySpecial = false;
+                    break;
+                case "AJ":
+                    EnemyHasOnlySpecial = false;
+                    break;
+            }
+            if (card.GetComponent<Card>().uniqueCard == Uniquecard.None && EnemyHasOnlySpecial) //Incase the player has a normal card
+            {
+                EnemyHasOnlySpecial = false;
+            }
+        }
+
+        if(PlayerHasOnlySpecial || EnemyHasOnlySpecial)
+        {
+            if (!Reshuffling)
+            {
+                Reshuffling = true;
+                StartCoroutine(RenewDecks());
+            }
+        }
+    }
+
+
+
+    IEnumerator UpdateDecksAnimated(bool GetNewCards = true)
     {
         yield return new WaitForSeconds(0.5f);
+        SetCardActivity(false);
         ThrowCard[] ThrownCards = FindObjectsByType<ThrowCard>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-        
         foreach(ThrowCard card in ThrownCards)
         {
             yield return new WaitForSeconds(Random.Range(0.01f, 0.05f));
@@ -120,8 +245,11 @@ public class ReadDeck : MonoBehaviour
                 Destroy(card.gameObject);
             }
         }
-        yield return new WaitForSeconds(1f);
-        UpdateCards();
+        if(GetNewCards)
+        {
+            yield return new WaitForSeconds(1f);
+            UpdateCards();
+        }
         yield return null;
     }
 
