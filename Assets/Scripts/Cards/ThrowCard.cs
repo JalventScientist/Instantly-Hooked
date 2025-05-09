@@ -1,11 +1,14 @@
 using UnityEngine;
 using DG.Tweening;
 using System.Collections;
+using Unity.VisualScripting;
 
 public class ThrowCard : MonoBehaviour
 {
     public void RenderProperCard(string CardName, bool isPlayerCard)
     {
+        print("CardName: " + CardName);
+        Sprite ConfirmSprite = Resources.Load<Sprite>("CardImages/" + CardName);
         GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("CardImages/" + CardName);
         StartCoroutine(animateThrow(isPlayerCard));
 
@@ -13,7 +16,7 @@ public class ThrowCard : MonoBehaviour
     IEnumerator animateThrow(bool isPlayerCard)
     {
         transform.rotation = Quaternion.Euler(0, 0, Random.Range(0f,360f));
-        transform.DOLocalMoveX(isPlayerCard ? -6 : 6, 0.3f).SetEase(Ease.OutQuad);
+        transform.DOLocalMoveX(isPlayerCard ? -3 : 3, 0.3f).SetEase(Ease.OutQuad);
         transform.DOLocalRotate(new Vector3(0, 0, Random.Range(0f, 360f)), 0.3f).SetEase(Ease.OutQuad);
         yield return null;
     }

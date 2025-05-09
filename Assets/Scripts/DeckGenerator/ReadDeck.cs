@@ -6,6 +6,7 @@ using UnityEngine;
 public class ReadDeck : MonoBehaviour
 {
     Decks cardDeck;
+    EnemyVisualizer EnemyHand;
 
     public List<GameObject> PlayerDeck = new List<GameObject>();
     public List<GameObject> EnemyDeck = new List<GameObject>();
@@ -21,9 +22,11 @@ public class ReadDeck : MonoBehaviour
     //DELAYS
     WaitForSeconds unloadCards = new WaitForSeconds(0.05f);
     WaitForSeconds DefaultDelay = new WaitForSeconds(0.5f);
+    WaitForFixedUpdate waitFixed = new WaitForFixedUpdate();
 
     private void Start()
     {
+        EnemyHand = FindFirstObjectByType<EnemyVisualizer>();
         cardDeck = GetComponent<Decks>();
         if (cardDeck == null)
         {
@@ -48,10 +51,11 @@ public class ReadDeck : MonoBehaviour
             PullDeck(false);
             yield return unloadCards;
         }
+        Reshuffling = false;
         CheckDecks();
         FindFirstObjectByType<BasicEnemy>().GetDeck();
         SetCardActivity();
-        Reshuffling = false;
+        
     }
 
     public void SetCardActivity(bool toggle = true) //Toggles if cards can be used or not to prevent premature clicks
@@ -66,7 +70,7 @@ public class ReadDeck : MonoBehaviour
         }
     }
 
-    public IEnumerator PullOneSide(int count, bool ForPlayer)
+    public IEnumerator PullOneSide(int count, bool ForPlayer, bool IsMidGame = false)
     {
         print("Called");
         for (int i = 0; i < count; i++)
@@ -78,6 +82,13 @@ public class ReadDeck : MonoBehaviour
         if (!ForPlayer)
         {
             FindFirstObjectByType<BasicEnemy>().GetDeck();
+        }
+        else
+        {
+            if(IsMidGame)
+            {
+                SetCardActivity(true);
+            }
         }
 
     }
@@ -94,7 +105,6 @@ public class ReadDeck : MonoBehaviour
             strings.Add(c.ToString());
         }
         GameObject cardPrefab;
-        print(strings[0] + " of " + SelectedCard);
         if (int.TryParse(strings[0], out int number)) //Special cards don't start with a number
         {
             cardPrefab = Resources.Load<GameObject>("Prefabs/Cards/Card");
@@ -102,17 +112,14 @@ public class ReadDeck : MonoBehaviour
         {
             try
             {
-                print("Trying to receive");
                 cardPrefab = Resources.Load<GameObject>("Prefabs/Cards/UniqueCards/" + SelectedCard);
                 if (cardPrefab.IsUnityNull())
                 {
-                    Debug.LogError("Card prefab not found: " + SelectedCard);
                     cardPrefab = Resources.Load<GameObject>("Prefabs/Cards/Card");
                 }
             }
             catch
             {
-                Debug.LogError("Card is not found, or card format is invalid: " + SelectedCard);
                 cardPrefab = Resources.Load<GameObject>("Prefabs/Cards/Card");
             }
             
@@ -143,21 +150,33 @@ public class ReadDeck : MonoBehaviour
 
     public IEnumerator RenewDecks()
     {
+        Reshuffling = true;
         SetCardActivity(false);
         yield return unloadCards;
+        ThrowCard[] ThrownCards = FindObjectsByType<ThrowCard>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        foreach (ThrowCard card in ThrownCards)
+        {
+            yield return new WaitForSeconds(Random.Range(0.01f, 0.05f));
+            card.DestroyCard();
+        }
         foreach (GameObject card in PlayerDeck)
         {
-            StartCoroutine(card.GetComponent<Card>().ForceRemoveCards()); ;
-            yield return unloadCards;
+            card.GetComponent<Card>().ForceRemoveCards(); ;
+            yield return waitFixed;
         }
-        for (int i = 0; i < EnemyDeck.Count; i++)
+        Card tempCard;
+        foreach (GameObject card in EnemyDeck)
         {
-            if (EnemyDeck[i].TryGetComponent<Card>(out Card cardScript))
+            if(card.TryGetComponent<Card>(out tempCard))
             {
-                StartCoroutine(cardScript.ForceRemoveCards());
+                card.GetComponent<Card>().ForceRemoveCards();
+            } else
+            {
+                print("Can't find card script :((((((((((((((((");
             }
-            yield return unloadCards;
+                yield return waitFixed;
         }
+        print("we've reached this point");
         PlayerDeck.Clear();
         EnemyDeck.Clear();
         List<string> tempDeck = new List<string>();
@@ -197,7 +216,7 @@ public class ReadDeck : MonoBehaviour
         }
     }
 
-    void CheckDecks()// Prevents that a deck has only Special cards (unless the player has Diamond Ace, King or jack since those change the decks)
+    void CheckDecks(bool DontCorrect = false)// Prevents that a deck has only Special cards (unless the player has Diamond Ace, King or jack since those change the decks)
     {
         int TotalShortage = PlayerDeck.Count + EnemyDeck.Count - (MaxEnemyDeck + MaxPlayerDeck); //calculate how many cards need to be pulled
 
@@ -256,6 +275,7 @@ public class ReadDeck : MonoBehaviour
             if (!Reshuffling)
             {
                 Reshuffling = true;
+                print("Reshuffling decks");
                 StartCoroutine(RenewDecks());
             }
         }
@@ -265,6 +285,10 @@ public class ReadDeck : MonoBehaviour
     IEnumerator UpdateDecksAnimated(bool GetNewCards = true)
     {
         yield return DefaultDelay;
+        if (EnemyHand.isVisible)
+        {
+            EnemyHand.ToggleView(false);
+        }
         SetCardActivity(false);
         ThrowCard[] ThrownCards = FindObjectsByType<ThrowCard>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         foreach(ThrowCard card in ThrownCards)
@@ -291,6 +315,7 @@ public class ReadDeck : MonoBehaviour
             yield return new WaitForSeconds(1f);
             UpdateCards();
         }
+        CheckDecks();
         yield return null;
     }
 

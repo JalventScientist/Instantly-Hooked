@@ -38,6 +38,7 @@ public class BasicEnemy : MonoBehaviour
 
     void SortCards()
     {
+        EarlyDeck.Clear();
         SpecialCardInDeck = false;
         foreach(GameObject card in localDeck)
         {
@@ -66,13 +67,20 @@ public class BasicEnemy : MonoBehaviour
     IEnumerator ChooseEarlyCardDelayed()
     {
         int Chance = EarlyDeck.Count > 0 ? Random.Range(0, 2) : 0; //50% chance to use a card if there are cards in the early deck
-        if(Chance > 0)
+        if (Chance > 0)
         {
             yield return new WaitForSeconds(Random.Range(Random.Range(0.5f, 1.5f), Random.Range(1.5f, 2.5f)));
             ChooseEarlyCard();
         } else
         {
-            readDeck.SetCardActivity(true);
+            if(NormalDeck.Count == 0) //Enemy only has special cards, which includes cards that can still make the game playable.
+            {
+                ChooseEarlyCard();
+            } else
+            {
+                readDeck.SetCardActivity(true);
+            }
+                
             yield return null;
         }
 
@@ -83,13 +91,15 @@ public class BasicEnemy : MonoBehaviour
     {
         bool ProperCardPicked = false;
         GameObject EarlyCard = null;
+        int cardIndex = 0;
         while (!ProperCardPicked)
         {
-            int cardIndex = Random.Range(0, EarlyDeck.Count);
+            cardIndex = Random.Range(0, EarlyDeck.Count);
             if ((EarlyDeck[cardIndex].name == "AH" || EarlyDeck[cardIndex].name == "QH") && evaluateDamage.enemyHealth >= 50)
             { //like why would you pull a health card if you're not damaged bruh
                if(EarlyDeck.Count == 1)
                 {
+                    print("Early special card has no use");
                     readDeck.SetCardActivity(true);
                     return;
                 } else
@@ -100,6 +110,7 @@ public class BasicEnemy : MonoBehaviour
             { //Keep the game fair.
                 if (EarlyDeck.Count == 1)
                 {
+                    print("Early special card has no use");
                     readDeck.SetCardActivity(true);
                     return;
                 }
@@ -115,9 +126,10 @@ public class BasicEnemy : MonoBehaviour
                 break;
             }
         }
-        GameObject card = Instantiate(EarlyCard, new Vector3(0, 0, 0), Quaternion.identity);
-        card.GetComponent<Card>().ApplyCard();
-        EarlyDeck.Remove(EarlyCard);
+        print(EarlyCard.TryGetComponent<Card>(out Card cardScript));
+        EarlyDeck.RemoveAt(cardIndex);
+        EarlyCard.GetComponent<Card>().ApplyCard();
+        
         readDeck.SetCardActivity(true);
     } 
 

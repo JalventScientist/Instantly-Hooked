@@ -29,6 +29,8 @@ public class Card : MonoBehaviour
 
     EventTrigger hoverTriggers; //Has to be disabled once clicked
 
+    public bool isSpecial = false;
+
 
     //Card Matching
     bool isTied = false;
@@ -36,6 +38,8 @@ public class Card : MonoBehaviour
 
     public bool UsedCard = false;
     public bool TrulyActive = false;
+
+    [HideInInspector] public bool WillBeAssigned = true;
 
     [HideInInspector] public TMP_Text InfoText;
 
@@ -47,20 +51,19 @@ public class Card : MonoBehaviour
         ButtonTransform = transform.GetChild(0).GetComponent<RectTransform>();
         hoverTriggers = ButtonTransform.GetComponent<EventTrigger>();
         ButtonTransform.position = new Vector3(0, -400, 0);
-        ButtonTransform.DOLocalMoveY(0, 0.3f).SetEase(Ease.OutBack);
-        if(isSpecialCondition())
+        ButtonTransform.DOLocalMoveY(0, 0.3f).SetEase(Ease.InOutQuad);
+        if(isSpecial)
         {
             InfoText = transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<TMP_Text>();
             InfoText.text = EffectText;
         }
     }
 
-    public IEnumerator ForceRemoveCards() //Hide cards for reshuffle
+    public void ForceRemoveCards() //Hide cards for reshuffle
     {
         TrulyActive = false;
         ButtonTransform.GetComponent<Button>().enabled = false;
-        ButtonTransform.DOLocalMoveY(-500f, 0.3f).SetEase(Ease.InOutQuad).OnComplete(()=> Destroy(gameObject));
-        yield return null;
+        ButtonTransform.DOLocalMoveY(-500f, 0.3f).SetEase(Ease.InBack).OnComplete(()=> Destroy(gameObject));
     }
 
     public virtual void ApplyCard()
@@ -74,20 +77,11 @@ public class Card : MonoBehaviour
             ButtonTransform.GetComponent<Button>().enabled = false;
             ButtonTransform.DOLocalMoveY(-500f,0.3f).SetEase(Ease.InOutQuad);
             UsedCard = true;
-             if (evaluateDamage != null && uniqueCard == Uniquecard.None)
+            if (evaluateDamage != null && WillBeAssigned)
             {
                 evaluateDamage.AssignCard(this);
             }
         }
-    }
-
-    bool isSpecialCondition()
-    {
-        if(uniqueCard == Uniquecard.Ace && cardType == CardType.Diamond)
-        {
-            return true;
-        }
-        return false;
     }
 
     public void SetupCard()
@@ -171,7 +165,7 @@ public class Card : MonoBehaviour
                 //379.5
                 ButtonTransform.DOSizeDelta(new Vector2(0, 379.5f), 0.3f);
                 cardTransform.DOLocalMoveY(0, 0.3f);
-                if (isSpecialCondition())
+                if (isSpecial)
                 {
                     InfoText.DOColor(new Color(1, 1, 1, 0), 0.3f);
                 }
@@ -180,7 +174,7 @@ public class Card : MonoBehaviour
             {
                 ButtonTransform.DOSizeDelta(new Vector2(0, 501f), 0.3f);
                 cardTransform.DOLocalMoveY(60.3f, 0.3f);
-                if (isSpecialCondition())
+                if (isSpecial)
                 {
                     InfoText.DOColor(new Color(1, 1, 1, 1), 0.3f);
                 }
