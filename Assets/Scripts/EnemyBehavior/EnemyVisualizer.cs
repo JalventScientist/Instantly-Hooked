@@ -4,12 +4,29 @@ using DG.Tweening;
 public class EnemyVisualizer : MonoBehaviour
 {
     RectTransform transform;
-    [HideInInspector] public bool isVisible = false;
+    public bool isVisible = false;
+
+    bool set = false;
 
     private void Start()
     {
         transform = GetComponent<RectTransform>();
     }
+
+    private void Update()
+    {
+        if (isVisible && !set)
+        {
+            set = true;
+            ToggleView(true);
+        }
+        else if (!isVisible && set)
+        {
+            set = false;
+            ToggleView(false);
+        }
+    }
+
     public void ToggleView(bool toggle)
     {
         isVisible = toggle;

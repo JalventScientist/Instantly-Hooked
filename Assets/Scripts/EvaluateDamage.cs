@@ -30,6 +30,9 @@ public class EvaluateDamage : MonoBehaviour
     public bool PlayerHasExtraMove = false;
     public bool EnemyHasExtraMove = false;
 
+    public int LastDealtDamage = 0;
+    public bool TargetedPlayer = false; //True = Player, False = Enemy
+
     private void Start()
     {
         EnemyScript = GetComponent<BasicEnemy>();
@@ -46,6 +49,9 @@ public class EvaluateDamage : MonoBehaviour
         {
             EnemyHealthText.text = "Enemy Health" + enemyHealth.ToString();
         }
+
+        plrHealth = Mathf.Clamp(plrHealth, 0, 50);
+        enemyHealth = Mathf.Clamp(enemyHealth, 0, 50);
     }
     public void AssignCard(Card targetCard)
     {
@@ -53,13 +59,11 @@ public class EvaluateDamage : MonoBehaviour
         {
             if (targetCard.uniqueCard != Uniquecard.None)
             {
-                print("PlayerCard Buff");
                 PlayerBuffCard = targetCard;
 
             }
             else
             {
-                print("PlayerCard Normal");
                 PlayerCard.Add(targetCard);
                 WaitForEval();
             }
@@ -69,12 +73,10 @@ public class EvaluateDamage : MonoBehaviour
         {
             if (targetCard.uniqueCard != Uniquecard.None)
             {
-                print("EnemyCard Buff");
                 EnemyBuffCard = targetCard;
             }
             else
             {
-                print("EnemyCard Normal");
                 EnemyCard.Add(targetCard);
             }
         }
@@ -123,18 +125,14 @@ public class EvaluateDamage : MonoBehaviour
         InitialDamage = PlayerIntendedDamage - EnemyIntendedDamage;
 
 
-        try
+        try //Buff cards may trigger a null error on this so it's put in a try
         {
             if ((!PlayerBuffCard.IsUnityNull() && PlayerBuffCard.uniqueCard == Uniquecard.Jack && PlayerBuffCard.cardType == CardType.Heart) || (!EnemyBuffCard.IsUnityNull() && PlayerBuffCard.uniqueCard == Uniquecard.Jack && EnemyBuffCard.cardType == CardType.Heart))
             {
                 InitialDamage = 0;
-                print("Jaque of hearts applied");
             }
         }
-        catch
-        {
-            print("Le fragile occurred lmao");
-        }
+        catch { }
 
         TargetsPlayer = InitialDamage < 0 ? true : false;
         FinalDamage = Mathf.Abs(InitialDamage);
@@ -146,6 +144,9 @@ public class EvaluateDamage : MonoBehaviour
         {
             enemyHealth -= FinalDamage;
         }
+        //Save last move for Ace of Hearts
+        LastDealtDamage = FinalDamage;
+        TargetedPlayer = TargetsPlayer;
         ReadDeckScript.Regen();
         ClearEval();
     }
@@ -157,7 +158,6 @@ public class EvaluateDamage : MonoBehaviour
         if(!card1.IsUnityNull() && card1.uniqueCard == Uniquecard.King && card1.cardType == CardType.Spade)
         {
             ReturnDamage = NumberModify + 3;
-            print("Original Damage:" + NumberModify + " | New Damage" + ReturnDamage);
         } else
         {
             ReturnDamage = NumberModify;
@@ -166,13 +166,13 @@ public class EvaluateDamage : MonoBehaviour
         if (!card2.IsUnityNull() && card2.uniqueCard == Uniquecard.King && card2.cardType == CardType.Heart)
         {
             DamagePostBuff = NumberModify - 3;
-            print("King Heart buff applied");
         }
         else
         {
             ReturnDamage = NumberModify;
         }
         int NewDamage = DamagePostBuff;
+        NewDamage = Mathf.Clamp(NewDamage, 0, 50);
         return NewDamage;
     }
 }

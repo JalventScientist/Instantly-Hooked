@@ -7,7 +7,6 @@ public class ThrowCard : MonoBehaviour
 {
     public void RenderProperCard(string CardName, bool isPlayerCard)
     {
-        print("CardName: " + CardName);
         Sprite ConfirmSprite = Resources.Load<Sprite>("CardImages/" + CardName);
         GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("CardImages/" + CardName);
         StartCoroutine(animateThrow(isPlayerCard));

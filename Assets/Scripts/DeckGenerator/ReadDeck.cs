@@ -72,7 +72,6 @@ public class ReadDeck : MonoBehaviour
 
     public IEnumerator PullOneSide(int count, bool ForPlayer, bool IsMidGame = false)
     {
-        print("Called");
         for (int i = 0; i < count; i++)
         {
             PullDeck(ForPlayer);
@@ -91,6 +90,33 @@ public class ReadDeck : MonoBehaviour
             }
         }
 
+    }
+
+    public IEnumerator DiscardOneSide(int count, bool ForPlayer, bool IsMidGame = false)
+    {
+        List<GameObject> TargetDeck = ForPlayer ? PlayerDeck : EnemyDeck;
+
+        for (int i = 0; i < count && i < TargetDeck.Count; i++)
+        {
+            if (TargetDeck[0] != null)
+            {
+                TargetDeck[0].GetComponent<Card>().ForceRemoveCards();
+                if (ForPlayer)
+                {
+                    PlayerDeck.RemoveAt(0);
+                }
+                else
+                {
+                    EnemyDeck.RemoveAt(0);
+                }
+                yield return waitFixed;
+            }
+        }
+        if (!ForPlayer)
+        {
+            FindFirstObjectByType<BasicEnemy>().GetDeck(false);
+        }
+        yield return null;
     }
 
     public void PullDeck(bool playerCard)
@@ -154,18 +180,28 @@ public class ReadDeck : MonoBehaviour
         SetCardActivity(false);
         yield return unloadCards;
         ThrowCard[] ThrownCards = FindObjectsByType<ThrowCard>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        List<GameObject> tempPlayerDeck = PlayerDeck;
+        List<GameObject> tempEnemyDeck = EnemyDeck;
         foreach (ThrowCard card in ThrownCards)
         {
             yield return new WaitForSeconds(Random.Range(0.01f, 0.05f));
             card.DestroyCard();
         }
-        foreach (GameObject card in PlayerDeck)
+        print("clearing full deck");
+        foreach (GameObject card in tempPlayerDeck)
         {
-            card.GetComponent<Card>().ForceRemoveCards(); ;
+            if (!card.IsUnityNull())
+            {
+                card.GetComponent<Card>().ForceRemoveCards();
+            }
+            else
+            {
+                print("GameObject is destroyed or smth idkf");
+            }
             yield return waitFixed;
         }
         Card tempCard;
-        foreach (GameObject card in EnemyDeck)
+        foreach (GameObject card in tempEnemyDeck)
         {
             if(card.TryGetComponent<Card>(out tempCard))
             {
@@ -315,6 +351,7 @@ public class ReadDeck : MonoBehaviour
             yield return new WaitForSeconds(1f);
             UpdateCards();
         }
+        yield return new WaitForSeconds(0.5f);
         CheckDecks();
         yield return null;
     }

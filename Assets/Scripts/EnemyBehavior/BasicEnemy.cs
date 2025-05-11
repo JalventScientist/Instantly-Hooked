@@ -24,7 +24,7 @@ public class BasicEnemy : MonoBehaviour
         evaluateDamage = GetComponent<EvaluateDamage>();
     }
 
-    public void GetDeck()
+    public void GetDeck(bool moveAllowed = true)
     {
         localDeck.Clear();
         SpecialDeck.Clear();
@@ -33,10 +33,10 @@ public class BasicEnemy : MonoBehaviour
         {
             localDeck.Add(card);
         }
-        SortCards();
+        SortCards(moveAllowed);
     }
 
-    void SortCards()
+    void SortCards(bool MoveAllowed = true)
     {
         EarlyDeck.Clear();
         SpecialCardInDeck = false;
@@ -61,7 +61,10 @@ public class BasicEnemy : MonoBehaviour
         {
             SpecialCardInDeck = true;
         }
-        StartCoroutine(ChooseEarlyCardDelayed());
+        if (MoveAllowed) //for Queen of diamonds
+        {
+            StartCoroutine(ChooseEarlyCardDelayed());
+        }
     }
 
     IEnumerator ChooseEarlyCardDelayed()
@@ -92,45 +95,82 @@ public class BasicEnemy : MonoBehaviour
         bool ProperCardPicked = false;
         GameObject EarlyCard = null;
         int cardIndex = 0;
-        while (!ProperCardPicked)
+        int Chances = 0;
+        while (!ProperCardPicked && Chances < 11)
         {
-            cardIndex = Random.Range(0, EarlyDeck.Count);
-            if ((EarlyDeck[cardIndex].name == "AH" || EarlyDeck[cardIndex].name == "QH") && evaluateDamage.enemyHealth >= 50)
-            { //like why would you pull a health card if you're not damaged bruh
-               if(EarlyDeck.Count == 1)
-                {
-                    print("Early special card has no use");
-                    readDeck.SetCardActivity(true);
-                    return;
-                } else
-                {
-                    continue;
+            if(EarlyDeck.Count > 0)
+            {
+                Chances++;
+                cardIndex = Random.Range(0, EarlyDeck.Count);
+                print("Choosing card " + EarlyDeck[cardIndex].name);
+                if ((EarlyDeck[cardIndex].name == "AH" || EarlyDeck[cardIndex].name == "QH") && evaluateDamage.enemyHealth >= 50)
+                { //like why would you pull a health card if you're not damaged bruh
+                    if (EarlyDeck.Count == 1)
+                    {
+                        print("Early special card has no use");
+                        readDeck.SetCardActivity(true);
+                        return;
+                    }
+                    else
+                    {
+                        print("no");
+                        continue;
+                    }
                 }
-            } else if (EarlyDeck[cardIndex].name == "QC" && readDeck.MaxPlayerDeck <= 3) 
-            { //Keep the game fair.
-                if (EarlyDeck.Count == 1)
+                else if (EarlyDeck[cardIndex].name == "QC" && readDeck.MaxPlayerDeck <= 3)
+                { //Keep the game fair.
+                    if (EarlyDeck.Count == 1)
+                    {
+                        print("Early special card has no use");
+                        readDeck.SetCardActivity(true);
+                        return;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+                if (EarlyDeck[cardIndex].GetComponent<Card>().UsedCard)
                 {
-                    print("Early special card has no use");
-                    readDeck.SetCardActivity(true);
-                    return;
+                    if (EarlyDeck.Count == 1)
+                    {
+                        print("card already used");
+                        readDeck.SetCardActivity(true);
+                        return;
+                    }
+                    else
+                    {
+                        print("card already used");
+                        continue;
+                    }
                 }
                 else
                 {
-                    continue;
+                    print("card confirmed");
+                    EarlyCard = EarlyDeck[cardIndex];
+                    ProperCardPicked = true;
+                    break;
                 }
-            }
-            else
+            } else
             {
-                EarlyCard = EarlyDeck[cardIndex];
-                ProperCardPicked = true;
-                break;
+                print("Earlydeck not found");
+                readDeck.SetCardActivity(true);
+                return;
             }
+            
         }
-        print(EarlyCard.TryGetComponent<Card>(out Card cardScript));
-        EarlyDeck.RemoveAt(cardIndex);
-        EarlyCard.GetComponent<Card>().ApplyCard();
-        
-        readDeck.SetCardActivity(true);
+        if(Chances > 10)
+        {
+            print("Too many chances");
+            readDeck.SetCardActivity(true);
+        } else
+        {
+            print(EarlyCard.TryGetComponent<Card>(out Card cardScript));
+            EarlyDeck.RemoveAt(cardIndex);
+            EarlyCard.GetComponent<Card>().ApplyCard();
+
+            readDeck.SetCardActivity(true);
+        }
     } 
 
     public void SelectCard(bool SpecialAllowed = true)
