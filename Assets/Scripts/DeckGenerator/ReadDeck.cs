@@ -96,18 +96,22 @@ public class ReadDeck : MonoBehaviour
     {
         List<GameObject> TargetDeck = ForPlayer ? PlayerDeck : EnemyDeck;
 
+        int chances = 0;
+        bool ReachedHardEnd; //Prevents unity crashing
+
+
         for (int i = 0; i < count && i < TargetDeck.Count; i++)
         {
-            if (TargetDeck[0] != null)
+            if (TargetDeck[i] != null)
             {
-                TargetDeck[0].GetComponent<Card>().ForceRemoveCards();
+                TargetDeck[i].GetComponent<Card>().ForceRemoveCards();
                 if (ForPlayer)
                 {
-                    PlayerDeck.RemoveAt(0);
+                    PlayerDeck.RemoveAt(i);
                 }
                 else
                 {
-                    EnemyDeck.RemoveAt(0);
+                    EnemyDeck.RemoveAt(i);
                 }
                 yield return waitFixed;
             }
@@ -317,7 +321,7 @@ public class ReadDeck : MonoBehaviour
         }
     }
 
-
+    // FUNCTIONS FOR UPDATING CARDS POST-SHOWDOWN -------------------------------------------------------------------------
     IEnumerator UpdateDecksAnimated(bool GetNewCards = true)
     {
         yield return DefaultDelay;

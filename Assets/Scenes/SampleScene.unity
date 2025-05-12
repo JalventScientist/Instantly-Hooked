@@ -315,12 +315,6 @@ MonoBehaviour:
   - JC
   - QC
   - KC
-  - KC
-  - KC
-  - KC
-  - KC
-  - KC
-  - KC
   drawDeck: []
   discardDeck: []
 --- !u!114 &182577594
