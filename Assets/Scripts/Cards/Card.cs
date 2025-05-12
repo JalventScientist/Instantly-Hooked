@@ -77,6 +77,7 @@ public class Card : MonoBehaviour
             ButtonTransform.GetComponent<Button>().enabled = false;
             ButtonTransform.DOLocalMoveY(-500f,0.3f).SetEase(Ease.InOutQuad);
             UsedCard = true;
+            TrulyActive = false;
             if (evaluateDamage != null && WillBeAssigned)
             {
                 evaluateDamage.AssignCard(this);

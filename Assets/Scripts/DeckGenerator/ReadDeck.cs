@@ -80,7 +80,7 @@ public class ReadDeck : MonoBehaviour
         CheckDecks();
         if (!ForPlayer)
         {
-            FindFirstObjectByType<BasicEnemy>().GetDeck();
+            FindFirstObjectByType<BasicEnemy>().GetDeck(!IsMidGame);
         }
         else
         {
@@ -192,7 +192,7 @@ public class ReadDeck : MonoBehaviour
         {
             if (!card.IsUnityNull())
             {
-                card.GetComponent<Card>().ForceRemoveCards();
+                PlayerDeck[PlayerDeck.IndexOf(card)].GetComponent<Card>().ForceRemoveCards();
             }
             else
             {
