@@ -5,7 +5,13 @@ using UnityEngine;
 
 public class ReadDeck : MonoBehaviour
 {
-    Decks cardDeck;
+
+    [Header("Generation")]
+    [SerializeField] private List<string> allCards = new List<string>();
+    public List<string> drawDeck = new List<string>();
+    public List<string> discardDeck = new List<string>();
+    [HideInInspector] public List<string>[] drawAndDiscardDeck = new List<string>[2];
+
     EnemyVisualizer EnemyHand;
 
     public List<GameObject> PlayerDeck = new List<GameObject>();
@@ -24,18 +30,17 @@ public class ReadDeck : MonoBehaviour
     WaitForSeconds DefaultDelay = new WaitForSeconds(0.5f);
     WaitForFixedUpdate waitFixed = new WaitForFixedUpdate();
 
+
+    private void Awake()
+    {
+        drawAndDiscardDeck[0] = drawDeck;
+        drawAndDiscardDeck[1] = discardDeck;
+        Util.ShuffleFromDeckIntoDeck(allCards, drawDeck);
+    }
     private void Start()
     {
         EnemyHand = FindFirstObjectByType<EnemyVisualizer>();
-        cardDeck = GetComponent<Decks>();
-        if (cardDeck == null)
-        {
-            Debug.LogError("Decks component not found in the scene.");
-            return;
-        } else
-        {
-            StartCoroutine(GetBasePull());
-        }
+        StartCoroutine(GetBasePull());
     }
 
     IEnumerator GetBasePull()
@@ -126,9 +131,9 @@ public class ReadDeck : MonoBehaviour
     public void PullDeck(bool playerCard)
     {
         string SelectedCard = "";
-        SelectedCard = cardDeck.drawDeck[cardDeck.drawDeck.Count - 1];
+        SelectedCard = drawDeck[drawDeck.Count - 1];
 
-        cardDeck.drawDeck.Remove(SelectedCard);
+        drawDeck.Remove(SelectedCard);
         List<string> strings = new List<string>();
         foreach(char c in SelectedCard)
         {
@@ -169,7 +174,7 @@ public class ReadDeck : MonoBehaviour
             EnemyDeck.Add(card);
             card.transform.SetParent(EnemyDeckRender, false);
         }
-        cardDeck.discardDeck.Add(SelectedCard);
+        discardDeck.Add(SelectedCard);
         cardScript.SetupCard();
     }
 
@@ -220,24 +225,24 @@ public class ReadDeck : MonoBehaviour
         PlayerDeck.Clear();
         EnemyDeck.Clear();
         List<string> tempDeck = new List<string>();
-        foreach (string card in cardDeck.drawDeck)
+        foreach (string card in drawDeck)
         {
             tempDeck.Add(card);
         }
-        foreach (string card in cardDeck.discardDeck)
+        foreach (string card in discardDeck)
         {
             tempDeck.Add(card);
         }
-        cardDeck.drawDeck.Clear();
-        cardDeck.discardDeck.Clear();
-        Util.ShuffleFromDeckIntoDeck(tempDeck, cardDeck.drawDeck);
+        drawDeck.Clear();
+        discardDeck.Clear();
+        Util.ShuffleFromDeckIntoDeck(tempDeck, drawDeck);
         StartCoroutine(GetBasePull());
     }
 
     void DiscardToDraw()
     {
         List<string> tempDeck = new List<string>();
-        foreach (string card in cardDeck.discardDeck)
+        foreach (string card in discardDeck)
         {
             tempDeck.Add(card);
         }
@@ -251,7 +256,7 @@ public class ReadDeck : MonoBehaviour
                 continue;
             } else
             {
-                cardDeck.discardDeck.Remove(card);
+                discardDeck.Remove(card);
             }
         }
     }
@@ -260,7 +265,7 @@ public class ReadDeck : MonoBehaviour
     {
         int TotalShortage = PlayerDeck.Count + EnemyDeck.Count - (MaxEnemyDeck + MaxPlayerDeck); //calculate how many cards need to be pulled
 
-        if(TotalShortage > cardDeck.drawDeck.Count)
+        if(TotalShortage > drawDeck.Count)
         {
             print("Too few cards to draw. Moving discard pile to draw.");
             DiscardToDraw();
