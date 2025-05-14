@@ -144,7 +144,7 @@ MonoBehaviour:
   TrulyActive: 0
   WillBeAssigned: 1
   InfoText: {fileID: 0}
-  EffectText: Reveal the opponent's deck
+  EffectText: Reveal each other's decks.
 --- !u!1 &6624422637865189120
 GameObject:
   m_ObjectHideFlags: 0

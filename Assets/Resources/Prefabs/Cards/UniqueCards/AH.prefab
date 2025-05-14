@@ -135,7 +135,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cardType: 0
-  Damage: 0
+  Damage: 2
   IsPlayerCard: 0
   uniqueCard: 0
   AlreadySetup: 0

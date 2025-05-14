@@ -46,6 +46,9 @@ public class Card : MonoBehaviour
     [Tooltip("Only used by special cards. Displays what the effect does.")]
     public string EffectText = "I do special stuff";
 
+    //Waitng Times;
+    WaitForSeconds SpinTime = new WaitForSeconds(0.25f);
+
     private void Awake()
     {
         ButtonTransform = transform.GetChild(0).GetComponent<RectTransform>();
@@ -72,7 +75,18 @@ public class Card : MonoBehaviour
         {
             hoverTriggers.enabled = false;
             EvaluateDamage evaluateDamage = FindFirstObjectByType<EvaluateDamage>();
-            GameObject throwCard = Instantiate(Resources.Load<GameObject>("Prefabs/Cards/ThrownCard"), new Vector3(IsPlayerCard ? -10 : 10, 0, 0), Quaternion.identity);
+            if (!IsPlayerCard)
+            {
+                evaluateDamage.EnemyCardsPlayed++;
+            } else
+            {
+                evaluateDamage.PlayerCardsPlayed++;
+
+
+            }
+            float Offset = -1.494f + (IsPlayerCard ? (float)(evaluateDamage.PlayerCardsPlayed -1) / 20 : (float)(evaluateDamage.EnemyCardsPlayed-1) / 20);
+                GameObject throwCard = Instantiate(Resources.Load<GameObject>("Prefabs/Cards/ThrownCard"), new Vector3(0, Offset, IsPlayerCard ? -5 : 5), Quaternion.identity);
+            throwCard.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
             throwCard.GetComponent<ThrowCard>().RenderProperCard(transform.name, IsPlayerCard);
             ButtonTransform.GetComponent<Button>().enabled = false;
             ButtonTransform.DOLocalMoveY(-500f,0.3f).SetEase(Ease.InOutQuad);
@@ -85,16 +99,72 @@ public class Card : MonoBehaviour
         }
     }
 
+    IEnumerator AnimateVisualizedCard(bool toggle)
+    {
+        if (toggle)
+        {
+            cardTransform.DOLocalRotate(new Vector3(0, -90, 0), 0.25f).SetEase(Ease.InSine);
+            yield return SpinTime;
+            if (!IsPlayerCard)
+            {
+                LoadCardTexture(true);
+            }
+            else
+            {
+                LoadCardTexture(false);
+            }
+            cardTransform.DOLocalRotate(new Vector3(0, -180, 0), 0.25f).SetEase(Ease.OutSine);
+        } else
+        {
+            cardTransform.DOLocalRotate(new Vector3(0, -90, 0), 0.25f).SetEase(Ease.InSine);
+            yield return SpinTime;
+            if (!IsPlayerCard)
+            {
+                LoadCardTexture(false);
+            }
+            else
+            {
+                LoadCardTexture(true);
+            }
+            cardTransform.DOLocalRotate(new Vector3(0, 0, 0), 0.25f).SetEase(Ease.OutSine);
+        }
+        yield return SpinTime;
+        if (!toggle)
+        {
+            TrulyActive = true;
+            hoverTriggers.enabled = true;
+        }
+    }
+    public void TurnCard(bool show)
+    {
+        hoverTriggers.enabled = false;
+        TrulyActive = false;
+        StartCoroutine(AnimateVisualizedCard(show));
+    }
+
+    void LoadCardTexture(bool loadName)
+    {
+        if (loadName)
+        {
+            cardRender.sprite = Resources.Load<Sprite>("CardImages/" + transform.name);
+        }
+        else
+        {
+            cardRender.sprite = Resources.Load<Sprite>("CardImages/Back");
+        }
+    }
+
     public void SetupCard()
     {
         cardTransform = transform.GetChild(0).GetChild(0).GetComponent<RectTransform>();
         cardRender = cardTransform.GetComponent<Image>();
-        cardRender.sprite = Resources.Load<Sprite>("CardImages/" + transform.name);
-        AlreadySetup = true;
+        LoadCardTexture(IsPlayerCard);
         if (!IsPlayerCard)
         {
             ButtonTransform.GetComponent<Button>().enabled = false;
         }
+            
+        AlreadySetup = true;
 
         List<string> cardData = new List<string>();
 

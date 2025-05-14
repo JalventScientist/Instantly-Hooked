@@ -14,9 +14,9 @@ public class ThrowCard : MonoBehaviour
     }
     IEnumerator animateThrow(bool isPlayerCard)
     {
-        transform.rotation = Quaternion.Euler(0, 0, Random.Range(0f,360f));
-        transform.DOLocalMoveX(isPlayerCard ? -3 : 3, 0.3f).SetEase(Ease.OutQuad);
-        transform.DOLocalRotate(new Vector3(0, 0, Random.Range(0f, 360f)), 0.3f).SetEase(Ease.OutQuad);
+        transform.rotation = Quaternion.Euler(90, 0, Random.Range(0f,360f));
+        transform.DOLocalMoveZ(isPlayerCard ? -2 : 2, 0.3f).SetEase(Ease.OutQuad);
+        transform.DOLocalRotate(new Vector3(90, 0, Random.Range(0f, 360f)), 0.3f).SetEase(Ease.OutQuad);
         yield return null;
     }
 

@@ -12,7 +12,8 @@ public class ReadDeck : MonoBehaviour
     public List<string> discardDeck = new List<string>();
     [HideInInspector] public List<string>[] drawAndDiscardDeck = new List<string>[2];
 
-    EnemyVisualizer EnemyHand;
+
+    DeckVisualizer DeckAnimator;
 
     public List<GameObject> PlayerDeck = new List<GameObject>();
     public List<GameObject> EnemyDeck = new List<GameObject>();
@@ -33,13 +34,14 @@ public class ReadDeck : MonoBehaviour
 
     private void Awake()
     {
+        DeckAnimator = FindFirstObjectByType<DeckVisualizer>();
         drawAndDiscardDeck[0] = drawDeck;
         drawAndDiscardDeck[1] = discardDeck;
         Util.ShuffleFromDeckIntoDeck(allCards, drawDeck);
+        DeckAnimator.UpdateDecks();
     }
     private void Start()
     {
-        EnemyHand = FindFirstObjectByType<EnemyVisualizer>();
         StartCoroutine(GetBasePull());
     }
 
@@ -118,6 +120,7 @@ public class ReadDeck : MonoBehaviour
                 {
                     EnemyDeck.RemoveAt(i);
                 }
+                DeckAnimator.UpdateDecks();
                 yield return waitFixed;
             }
         }
@@ -175,6 +178,7 @@ public class ReadDeck : MonoBehaviour
             card.transform.SetParent(EnemyDeckRender, false);
         }
         discardDeck.Add(SelectedCard);
+        DeckAnimator.UpdateDecks();
         cardScript.SetupCard();
     }
 
@@ -330,10 +334,6 @@ public class ReadDeck : MonoBehaviour
     IEnumerator UpdateDecksAnimated(bool GetNewCards = true)
     {
         yield return DefaultDelay;
-        if (EnemyHand.isVisible)
-        {
-            EnemyHand.ToggleView(false);
-        }
         SetCardActivity(false);
         ThrowCard[] ThrownCards = FindObjectsByType<ThrowCard>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         foreach(ThrowCard card in ThrownCards)

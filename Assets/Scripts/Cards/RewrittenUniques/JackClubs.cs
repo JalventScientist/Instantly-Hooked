@@ -13,6 +13,6 @@ public class JackClubs : Card
     public override void ApplyCard()
     {
         base.ApplyCard();
-        enemyVisualizer.ToggleView(true);
+        enemyVisualizer.ToggleView();
     }
 }

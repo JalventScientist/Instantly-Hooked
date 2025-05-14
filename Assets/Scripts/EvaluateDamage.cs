@@ -30,6 +30,9 @@ public class EvaluateDamage : MonoBehaviour
     public bool PlayerHasExtraMove = false;
     public bool EnemyHasExtraMove = false;
 
+    public int EnemyCardsPlayed = 0;
+    public int PlayerCardsPlayed = 0;
+
     public int LastDealtDamage = 0;
     public bool TargetedPlayer = false; //True = Player, False = Enemy
 
@@ -88,6 +91,8 @@ public class EvaluateDamage : MonoBehaviour
         EnemyCard.Clear();
         PlayerBuffCard = null;
         EnemyBuffCard = null;
+        EnemyCardsPlayed = 0;
+        PlayerCardsPlayed = 0;
     }
 
     public void WaitForEval()
