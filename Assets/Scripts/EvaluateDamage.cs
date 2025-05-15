@@ -29,6 +29,7 @@ public class EvaluateDamage : MonoBehaviour
 
     public bool PlayerHasExtraMove = false;
     public bool EnemyHasExtraMove = false;
+    public int EnemyMoves = 1;
 
     public int EnemyCardsPlayed = 0;
     public int PlayerCardsPlayed = 0;
@@ -105,6 +106,7 @@ public class EvaluateDamage : MonoBehaviour
         EnemyCard.Clear();
         PlayerBuffCard = null;
         EnemyBuffCard = null;
+        EnemyMoves = 1;
         EnemyCardsPlayed = 0;
         PlayerCardsPlayed = 0;
     }
@@ -112,7 +114,7 @@ public class EvaluateDamage : MonoBehaviour
     public void WaitForEval()
     {
         ReadDeckScript.SetCardActivity(false);
-        EnemyScript.SelectCard();
+        EnemyScript.SelectCard(true, EnemyMoves);
     }
 
     int StackRawDamage(List<Card> cards)

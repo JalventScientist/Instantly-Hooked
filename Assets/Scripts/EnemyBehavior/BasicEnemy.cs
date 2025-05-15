@@ -130,6 +130,20 @@ public class BasicEnemy : MonoBehaviour
                         continue;
                     }
                 }
+                else if (EarlyDeck[cardIndex].name == "JS" && NormalDeck.Count >= 2)
+                { //Only play card if you can play two cards.
+                    if (EarlyDeck.Count == 1)
+                    {
+                        print("Early special card has no use");
+                        readDeck.SetCardActivity(true);
+                        return;
+                    }
+                    else
+                    {
+                        evaluateDamage.EnemyMoves++;
+                        continue;
+                    }
+                }
                 if (EarlyDeck[cardIndex].GetComponent<Card>().UsedCard)
                 {
                     if (EarlyDeck.Count == 1)
@@ -173,17 +187,24 @@ public class BasicEnemy : MonoBehaviour
         }
     } 
 
-    public void SelectCard(bool SpecialAllowed = true)
+    public void SelectCard(bool SpecialAllowed = true, int nonSpecialAllowed = 1)
     {
         print("Selecting Card");
         int SpecialOrNormal = SpecialCardInDeck && SpecialAllowed ? Random.Range(0,4) : 1;
 
         if (SpecialOrNormal > 0) //Use a normal card
         {
-            int cardIndex = Random.Range(0, NormalDeck.Count);
-            GameObject card = NormalDeck[cardIndex];
-            NormalDeck.RemoveAt(cardIndex);
-            card.GetComponent<Card>().ApplyCard();
+            for (int i = 0; i < nonSpecialAllowed; i++)
+            {
+                int cardIndex = Random.Range(0, NormalDeck.Count);
+                GameObject card = NormalDeck[cardIndex];
+                NormalDeck.RemoveAt(cardIndex);
+                card.GetComponent<Card>().ApplyCard();
+                if (NormalDeck.Count <= 0)
+                {
+                    break;
+                }
+            }
             evaluateDamage.EvalDamage();
 
         } else //use a special card
@@ -192,9 +213,8 @@ public class BasicEnemy : MonoBehaviour
             GameObject card = SpecialDeck[cardIndex];
             SpecialDeck.RemoveAt(cardIndex);
             card.GetComponent<Card>().ApplyCard();
-            SelectCard(false);
+            SelectCard(false, nonSpecialAllowed);
         }
-        
     }
 
 }
