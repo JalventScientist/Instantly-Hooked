@@ -136,7 +136,11 @@ public class EvaluateDamage : MonoBehaviour
             {
                 InitialDamage = 0;
             }
-            else if ((!PlayerBuffCard.IsUnityNull() && PlayerBuffCard.uniqueCard == Uniquecard.Ace && PlayerBuffCard.cardType == CardType.Spade) || (!EnemyBuffCard.IsUnityNull() && EnemyBuffCard.uniqueCard == Uniquecard.Ace && EnemyBuffCard.cardType == CardType.Spade))
+            else if ((!PlayerBuffCard.IsUnityNull() && PlayerBuffCard.uniqueCard == Uniquecard.Ace && PlayerBuffCard.cardType == CardType.Spade) && InitialDamage < 0)
+            {
+                InitialDamage = -InitialDamage;
+            }
+            else if ((!EnemyBuffCard.IsUnityNull() && EnemyBuffCard.uniqueCard == Uniquecard.Ace && EnemyBuffCard.cardType == CardType.Spade) && InitialDamage > 0)
             {
                 InitialDamage = -InitialDamage;
             }
