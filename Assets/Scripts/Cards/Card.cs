@@ -54,7 +54,7 @@ public class Card : MonoBehaviour
         ButtonTransform = transform.GetChild(0).GetComponent<RectTransform>();
         hoverTriggers = ButtonTransform.GetComponent<EventTrigger>();
         ButtonTransform.position = new Vector3(0, -400, 0);
-        ButtonTransform.DOLocalMoveY(0, 0.3f).SetEase(Ease.InOutQuad);
+        ButtonTransform.DOLocalMoveY(0, 0.3f).SetEase(Ease.OutBack);
         if(isSpecial)
         {
             InfoText = transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<TMP_Text>();
@@ -66,7 +66,7 @@ public class Card : MonoBehaviour
     {
         TrulyActive = false;
         ButtonTransform.GetComponent<Button>().enabled = false;
-        ButtonTransform.DOLocalMoveY(-500f, 0.3f).SetEase(Ease.InBack).OnComplete(()=> Destroy(gameObject));
+        ButtonTransform.DOLocalMoveY(-700f, 0.3f).SetEase(Ease.InBack).OnComplete(()=> Destroy(gameObject));
     }
 
     public virtual void ApplyCard()
@@ -89,7 +89,7 @@ public class Card : MonoBehaviour
             throwCard.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
             throwCard.GetComponent<ThrowCard>().RenderProperCard(transform.name, IsPlayerCard);
             ButtonTransform.GetComponent<Button>().enabled = false;
-            ButtonTransform.DOLocalMoveY(-500f,0.3f).SetEase(Ease.InOutQuad);
+            ButtonTransform.DOLocalMoveY(-700f,0.3f).SetEase(Ease.InOutQuad);
             UsedCard = true;
             TrulyActive = false;
             if (evaluateDamage != null && WillBeAssigned)

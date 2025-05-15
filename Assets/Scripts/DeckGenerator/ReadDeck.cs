@@ -99,26 +99,47 @@ public class ReadDeck : MonoBehaviour
 
     }
 
-    public IEnumerator DiscardOneSide(int count, bool ForPlayer, bool IsMidGame = false)
+    public IEnumerator DiscardOneSide(int count, bool ForPlayer, bool forceLock = false, bool RenewAfterwards = false)
     {
+
         List<GameObject> TargetDeck = ForPlayer ? PlayerDeck : EnemyDeck;
 
-        int chances = 0;
-        bool ReachedHardEnd; //Prevents unity crashing
-
-
-        for (int i = 0; i < count && i < TargetDeck.Count; i++)
+        if (forceLock)
         {
-            if (TargetDeck[i] != null)
+            SetCardActivity(false);
+        }
+        //Making sure the game doesn't discard more cards than there are available. Jack of Diamonds mainly relies on this.
+        int chances = 0;
+        bool ReachedHardEnd;
+        List<GameObject> ActualDeck = new List<GameObject>(); //Deck with only active cards that can actually be pulled
+
+        foreach(GameObject card in TargetDeck)
+        {
+            if (!card.GetComponent<Card>().UsedCard)
             {
-                TargetDeck[i].GetComponent<Card>().ForceRemoveCards();
+                ActualDeck.Add(card);
+            }
+        }
+
+        if(ActualDeck.Count < count)
+        {
+            Debug.LogError("No new Cards found");
+            yield return null;
+        }
+        //Actually get rid of the cards
+        for (int i = 0; i < count && i < ActualDeck.Count; i++)
+        {
+            if (TargetDeck.Contains(ActualDeck[i]))
+            {
+                int j = TargetDeck.IndexOf(ActualDeck[i]);
+                TargetDeck[j].GetComponent<Card>().ForceRemoveCards();
                 if (ForPlayer)
                 {
-                    PlayerDeck.RemoveAt(i);
+                    PlayerDeck.RemoveAt(j);
                 }
                 else
                 {
-                    EnemyDeck.RemoveAt(i);
+                    EnemyDeck.RemoveAt(j);
                 }
                 DeckAnimator.UpdateDecks();
                 yield return waitFixed;
@@ -128,13 +149,28 @@ public class ReadDeck : MonoBehaviour
         {
             FindFirstObjectByType<BasicEnemy>().GetDeck(false);
         }
+        if (RenewAfterwards)
+        {
+            StartCoroutine(PullOneSide(count, ForPlayer, true));
+        }
         yield return null;
     }
 
     public void PullDeck(bool playerCard)
     {
         string SelectedCard = "";
-        SelectedCard = drawDeck[drawDeck.Count - 1];
+        // Check if drawDeck is not empty before accessing the last element
+        if (drawDeck.Count > 0)
+        {
+            SelectedCard = drawDeck[drawDeck.Count - 1];
+        }
+        else
+        {
+            StopAllCoroutines(); //Stop trying to pull
+            Reshuffling = true;
+            StartCoroutine(RenewDecks());
+            return;
+        }
 
         drawDeck.Remove(SelectedCard);
         List<string> strings = new List<string>();

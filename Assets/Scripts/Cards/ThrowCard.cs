@@ -22,7 +22,7 @@ public class ThrowCard : MonoBehaviour
 
     public void DestroyCard()
     {
-
-        transform.DOLocalMoveY(-10f, 0.3f).SetEase(Ease.InQuad).OnComplete(()=> Destroy(gameObject));
+        Transform Target = GameObject.Find("DiscardDeck").transform;
+        transform.DOLocalMove(new Vector3(Target.position.x, transform.position.y, Target.position.z), 0.3f).SetEase(Ease.OutQuad).OnComplete(()=>Destroy(gameObject));
     }
 }
