@@ -143,7 +143,7 @@ public class EvaluateDamage : MonoBehaviour
         PlayerIntendedDamage = AffectIntended(PlayerBuffCard, EnemyBuffCard, PlayerIntendedDamage);
         EnemyIntendedDamage = AffectIntended(EnemyBuffCard, PlayerBuffCard, EnemyIntendedDamage);
 
-        CalculateTypingAdvantage(PlayerIntendedDamage, EnemyIntendedDamage, (PlayerBuffCard.uniqueCard == Uniquecard.Ace && PlayerBuffCard.cardType == CardType.Club) || (EnemyBuffCard.uniqueCard == Uniquecard.Ace && EnemyBuffCard.cardType == CardType.Club), (PlayerBuffCard.uniqueCard == Uniquecard.Queen && PlayerBuffCard.cardType == CardType.Spade) || (EnemyBuffCard.uniqueCard == Uniquecard.Queen && EnemyBuffCard.cardType == CardType.Spade));
+        CalculateTypingAdvantage(PlayerIntendedDamage, EnemyIntendedDamage, (!PlayerBuffCard.IsUnityNull() && PlayerBuffCard.uniqueCard == Uniquecard.Ace && PlayerBuffCard.cardType == CardType.Club) || (!EnemyBuffCard.IsUnityNull() && EnemyBuffCard.uniqueCard == Uniquecard.Ace && EnemyBuffCard.cardType == CardType.Club), (!PlayerBuffCard.IsUnityNull() && PlayerBuffCard.uniqueCard == Uniquecard.Queen && PlayerBuffCard.cardType == CardType.Spade) || (!EnemyBuffCard.IsUnityNull() && EnemyBuffCard.uniqueCard == Uniquecard.Queen && EnemyBuffCard.cardType == CardType.Spade));
 
         print(PlayerIntendedDamage.ToString() + " - " + EnemyIntendedDamage.ToString() + " = " + (PlayerIntendedDamage - EnemyIntendedDamage).ToString());
 
