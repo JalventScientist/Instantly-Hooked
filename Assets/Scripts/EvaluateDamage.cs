@@ -132,9 +132,13 @@ public class EvaluateDamage : MonoBehaviour
 
         try //Buff cards may trigger a null error on this so it's put in a try
         {
-            if ((!PlayerBuffCard.IsUnityNull() && PlayerBuffCard.uniqueCard == Uniquecard.Jack && PlayerBuffCard.cardType == CardType.Heart) || (!EnemyBuffCard.IsUnityNull() && PlayerBuffCard.uniqueCard == Uniquecard.Jack && EnemyBuffCard.cardType == CardType.Heart))
+            if ((!PlayerBuffCard.IsUnityNull() && PlayerBuffCard.uniqueCard == Uniquecard.Jack && PlayerBuffCard.cardType == CardType.Heart) || (!EnemyBuffCard.IsUnityNull() && EnemyBuffCard.uniqueCard == Uniquecard.Jack && EnemyBuffCard.cardType == CardType.Heart))
             {
                 InitialDamage = 0;
+            }
+            else if ((!PlayerBuffCard.IsUnityNull() && PlayerBuffCard.uniqueCard == Uniquecard.Ace && PlayerBuffCard.cardType == CardType.Spade) || (!EnemyBuffCard.IsUnityNull() && EnemyBuffCard.uniqueCard == Uniquecard.Ace && EnemyBuffCard.cardType == CardType.Spade))
+            {
+                InitialDamage = -InitialDamage;
             }
         }
         catch { }
