@@ -141,7 +141,6 @@ public class BasicEnemy : MonoBehaviour
                     else
                     {
                         evaluateDamage.EnemyMoves++;
-                        continue;
                     }
                 }
                 if (EarlyDeck[cardIndex].GetComponent<Card>().UsedCard)
