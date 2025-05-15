@@ -86,9 +86,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4190953322909077685}
   - component: {fileID: 8258793373594387581}
-  - component: {fileID: 6424021409753448939}
+  - component: {fileID: 2111603676634978940}
   m_Layer: 0
-  m_Name: AD
+  m_Name: JD
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -122,7 +122,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4897084183709132650}
   m_CullTransparentMesh: 1
---- !u!114 &6424021409753448939
+--- !u!114 &2111603676634978940
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -131,20 +131,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 4897084183709132650}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eaeeb7b4f61bff147af5e0081b3f8a52, type: 3}
+  m_Script: {fileID: 11500000, guid: 71c282a0b57f3e146baab83debd5bd92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   cardType: 2
   Damage: 2
   IsPlayerCard: 0
-  uniqueCard: 0
+  uniqueCard: 3
   AlreadySetup: 0
   isSpecial: 1
   UsedCard: 0
   TrulyActive: 0
   WillBeAssigned: 1
   InfoText: {fileID: 0}
-  EffectText: Shuffle the entire deck.
+  EffectText: Discard & Draw 3
 --- !u!1 &6624422637865189120
 GameObject:
   m_ObjectHideFlags: 0
@@ -219,8 +219,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 0
-  m_fontColor: {r: 0, g: 0, b: 0, a: 0}
+    rgba: 16777215
+  m_fontColor: {r: 1, g: 1, b: 1, a: 0}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -372,8 +372,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6424021409753448939}
-        m_TargetAssemblyTypeName: AceDiamonds, Assembly-CSharp
+      - m_Target: {fileID: 2111603676634978940}
+        m_TargetAssemblyTypeName: JackDiamonds, Assembly-CSharp
         m_MethodName: ApplyCard
         m_Mode: 1
         m_Arguments:
@@ -401,7 +401,7 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 6424021409753448939}
+        - m_Target: {fileID: 2111603676634978940}
           m_TargetAssemblyTypeName: Card, Assembly-CSharp
           m_MethodName: SetHover
           m_Mode: 6
@@ -417,7 +417,7 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 6424021409753448939}
+        - m_Target: {fileID: 2111603676634978940}
           m_TargetAssemblyTypeName: Card, Assembly-CSharp
           m_MethodName: SetHover
           m_Mode: 6

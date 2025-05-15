@@ -12,7 +12,7 @@ public class QueenDiamond : Card
 
     public override void ApplyCard()
     {
-        StartCoroutine(readDeck.DiscardOneSide(1, !IsPlayerCard, true));
+        StartCoroutine(readDeck.DiscardOneSide(1, !IsPlayerCard));
         base.ApplyCard();
     }
 }
