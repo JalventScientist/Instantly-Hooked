@@ -68,7 +68,21 @@ public class EvaluateDamage : MonoBehaviour
             else
             {
                 PlayerCard.Add(targetCard);
-                WaitForEval();
+                try
+                {
+                    if (!PlayerBuffCard.IsUnityNull() && PlayerBuffCard.uniqueCard == Uniquecard.Jack && PlayerBuffCard.cardType == CardType.Spade)
+                    {
+                        PlayerBuffCard = null;
+                    }
+                    else
+                    {
+                        WaitForEval();
+                    }
+                }
+                catch
+                {
+                    WaitForEval();
+                }
             }
             
         }
