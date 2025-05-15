@@ -24,6 +24,8 @@ public class EvaluateDamage : MonoBehaviour
     [SerializeField] TMP_Text PlayerHealthText;
     [SerializeField] TMP_Text EnemyHealthText;
 
+    [SerializeField] private int extraDamageFromTypingAdvantage;
+
     public int plrHealth = 50;
     public int enemyHealth = 50;
 
@@ -116,7 +118,7 @@ public class EvaluateDamage : MonoBehaviour
         ReadDeckScript.SetCardActivity(false);
         EnemyScript.SelectCard(true, EnemyMoves);
     }
-
+    
     int StackRawDamage(List<Card> cards)
     {
         int RawDamage = 0;
@@ -126,7 +128,7 @@ public class EvaluateDamage : MonoBehaviour
         }
         return RawDamage;
     }
-
+    
     public void EvalDamage()
     {
         bool TargetsPlayer = false;
@@ -140,6 +142,8 @@ public class EvaluateDamage : MonoBehaviour
         //Add changes pre-attack if using Heart/Spade King
         PlayerIntendedDamage = AffectIntended(PlayerBuffCard, EnemyBuffCard, PlayerIntendedDamage);
         EnemyIntendedDamage = AffectIntended(EnemyBuffCard, PlayerBuffCard, EnemyIntendedDamage);
+
+        CalculateTypingAdvantage(PlayerIntendedDamage, EnemyIntendedDamage, (PlayerBuffCard.uniqueCard == Uniquecard.Ace && PlayerBuffCard.cardType == CardType.Club) || (EnemyBuffCard.uniqueCard == Uniquecard.Ace && EnemyBuffCard.cardType == CardType.Club), (PlayerBuffCard.uniqueCard == Uniquecard.Queen && PlayerBuffCard.cardType == CardType.Spade) || (EnemyBuffCard.uniqueCard == Uniquecard.Queen && EnemyBuffCard.cardType == CardType.Spade));
 
         print(PlayerIntendedDamage.ToString() + " - " + EnemyIntendedDamage.ToString() + " = " + (PlayerIntendedDamage - EnemyIntendedDamage).ToString());
 
@@ -203,5 +207,54 @@ public class EvaluateDamage : MonoBehaviour
         int NewDamage = DamagePostBuff;
         NewDamage = Mathf.Clamp(NewDamage, 0, 50);
         return NewDamage;
+    }
+
+    /*
+    Hearts beats Clubs
+    Clubs beats Diamonds
+    Diamonds beat Spades
+    Spades beat Hearts
+    Hearts > Clubs > Diamonds > Spades > Hearts
+    */
+
+    private char[] typeChart = { 'H', 'C', 'D', 'S' };
+    private void CalculateTypingAdvantage(int playerDamage, int enemyDamage, bool aceOfClubs, bool queenOfSpades)
+    {
+        int typingAdvantage = 0;
+        // positive favors player negative favors enemy
+        foreach (Card playerCard in PlayerCard)
+        {
+            int playerCardType = Util.FindIndexOfItemInArray(typeChart, playerCard.name[1]);
+            if (playerCardType == -1)
+            {
+                Debug.LogError("WrongPartOfTheCardName");
+                return;
+            }
+            foreach (Card enemyCard in EnemyCard)
+            {
+                int enemyCardType = Util.FindIndexOfItemInArray(typeChart, enemyCard.name[1]);
+                if (enemyCardType != playerCardType)
+                {
+                    if (enemyCardType == playerCardType - 1 || (enemyCardType == 3 && playerCardType == 0))
+                        typingAdvantage--;
+                    else if (enemyCardType == playerCardType + 1 || (enemyCardType == 0 && playerCardType == 3))
+                        typingAdvantage++;
+                }
+            }
+        }
+        if (aceOfClubs)
+            typingAdvantage = -typingAdvantage;
+        if (typingAdvantage > 0)
+        {
+            print("Typing favors player");
+            playerDamage += extraDamageFromTypingAdvantage * (queenOfSpades ? 1 : 2);
+        }
+        else if (typingAdvantage < 0)
+        {
+            print("Typing favors enemy");
+            enemyDamage += extraDamageFromTypingAdvantage * (queenOfSpades ? 1 : 2);
+        }
+        else
+            print("Typing favors no-one");
     }
 }

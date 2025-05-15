@@ -52,4 +52,21 @@ public class Util : MonoBehaviour
         drawTo.Add(drawFrom[drawFromIndex]);
         drawFrom.RemoveAt(drawFromIndex);
     }
+    /// <summary>
+    /// Returns -1 if item is not in the array
+    /// </summary>
+    /// <param name="array"></param>
+    /// <param name="find"></param>
+    /// <returns></returns>
+    static public int FindIndexOfItemInArray(char[] array, char find)
+    {
+        for (int i = 0; i < array.Length; i++)
+        {
+            if (array[i] == find)
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
 }
