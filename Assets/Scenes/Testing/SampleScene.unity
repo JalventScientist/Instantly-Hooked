@@ -1434,10 +1434,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerHealthText: {fileID: 6170387111424916701}
   EnemyHealthText: {fileID: 2885989414921210890}
+  extraDamageFromTypingAdvantage: 0
   plrHealth: 50
   enemyHealth: 50
   PlayerHasExtraMove: 0
   EnemyHasExtraMove: 0
+  EnemyMoves: 1
   EnemyCardsPlayed: 0
   PlayerCardsPlayed: 0
   LastDealtDamage: 0
