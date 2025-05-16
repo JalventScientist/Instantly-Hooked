@@ -39,6 +39,8 @@ public class EvaluateDamage : MonoBehaviour
     public int LastDealtDamage = 0;
     public bool TargetedPlayer = false; //True = Player, False = Enemy
 
+    private char[] typeChart = { 'H', 'C', 'D', 'S' };
+
     private void Start()
     {
         EnemyScript = GetComponent<BasicEnemy>();
@@ -188,7 +190,7 @@ public class EvaluateDamage : MonoBehaviour
 
     public int AffectIntended(Card card1, Card card2, int NumberModify)
     {
-        print(NumberModify);
+        
         int ReturnDamage;
         if(!card1.IsUnityNull() && card1.uniqueCard == Uniquecard.King && card1.cardType == CardType.Spade)
         {
@@ -219,7 +221,7 @@ public class EvaluateDamage : MonoBehaviour
     Hearts > Clubs > Diamonds > Spades > Hearts
     */
 
-    private char[] typeChart = { 'H', 'C', 'D', 'S' };
+
     private int[] CalculateTypingAdvantage(int playerDamage, int enemyDamage, bool aceOfClubs, bool queenOfSpades)
     {
         int typingAdvantage = 0;
@@ -244,12 +246,12 @@ public class EvaluateDamage : MonoBehaviour
         if (typingAdvantage > 0)
         {
             print("Typing favors player");
-            playerDamage += extraDamageFromTypingAdvantage * (queenOfSpades ? 2 : 1);
+            playerDamage += Mathf.RoundToInt(playerDamage *(queenOfSpades ? 1 : .5f));
         }
         else if (typingAdvantage < 0)
         {
             print("Typing favors enemy");
-            enemyDamage += extraDamageFromTypingAdvantage * (queenOfSpades ? 2 : 1);
+            enemyDamage += Mathf.RoundToInt(enemyDamage * (queenOfSpades ? 1 : .5f));
         }
         else
             print("Typing favors no-one");

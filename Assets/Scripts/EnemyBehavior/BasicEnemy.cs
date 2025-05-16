@@ -102,18 +102,18 @@ public class BasicEnemy : MonoBehaviour
             {
                 Chances++;
                 cardIndex = Random.Range(0, EarlyDeck.Count);
-                print("Choosing card " + EarlyDeck[cardIndex].name);
+                //print("Choosing card " + EarlyDeck[cardIndex].name);
                 if ((EarlyDeck[cardIndex].name == "AH" || EarlyDeck[cardIndex].name == "QH") && evaluateDamage.enemyHealth >= 50)
                 { //like why would you pull a health card if you're not damaged bruh
                     if (EarlyDeck.Count == 1)
                     {
-                        print("Early special card has no use");
+                        //print("Early special card has no use");
                         readDeck.SetCardActivity(true);
                         return;
                     }
                     else
                     {
-                        print("no");
+                        //print("no");
                         continue;
                     }
                 }
@@ -121,7 +121,7 @@ public class BasicEnemy : MonoBehaviour
                 { //Keep the game fair.
                     if (EarlyDeck.Count == 1)
                     {
-                        print("Early special card has no use");
+                        //print("Early special card has no use");
                         readDeck.SetCardActivity(true);
                         return;
                     }
@@ -134,7 +134,7 @@ public class BasicEnemy : MonoBehaviour
                 { //Only play card if you can play two cards.
                     if (EarlyDeck.Count == 1)
                     {
-                        print("Early special card has no use");
+                        //print("Early special card has no use");
                         readDeck.SetCardActivity(true);
                         return;
                     }
@@ -147,26 +147,26 @@ public class BasicEnemy : MonoBehaviour
                 {
                     if (EarlyDeck.Count == 1)
                     {
-                        print("card already used");
+                        //print("card already used");
                         readDeck.SetCardActivity(true);
                         return;
                     }
                     else
                     {
-                        print("card already used");
+                        //print("card already used");
                         continue;
                     }
                 }
                 else
                 {
-                    print("card confirmed");
+                    //print("card confirmed");
                     EarlyCard = EarlyDeck[cardIndex];
                     ProperCardPicked = true;
                     break;
                 }
             } else
             {
-                print("Earlydeck not found");
+               //print("Earlydeck not found");
                 readDeck.SetCardActivity(true);
                 return;
             }
