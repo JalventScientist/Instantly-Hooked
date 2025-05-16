@@ -236,7 +236,6 @@ public class ReadDeck : MonoBehaviour
             yield return new WaitForSeconds(Random.Range(0.01f, 0.05f));
             card.DestroyCard();
         }
-        print("clearing full deck");
         foreach (GameObject card in tempPlayerDeck)
         {
             if (!card.IsUnityNull())
@@ -261,7 +260,6 @@ public class ReadDeck : MonoBehaviour
             }
                 yield return waitFixed;
         }
-        print("we've reached this point");
         PlayerDeck.Clear();
         EnemyDeck.Clear();
         List<string> tempDeck = new List<string>();

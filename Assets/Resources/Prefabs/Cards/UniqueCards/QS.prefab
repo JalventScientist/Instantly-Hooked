@@ -88,7 +88,7 @@ GameObject:
   - component: {fileID: 8258793373594387581}
   - component: {fileID: 7746890053606690483}
   m_Layer: 0
-  m_Name: AC
+  m_Name: QS
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -134,17 +134,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a268d8cd08cb94444a4b2f96afe27bc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cardType: 3
+  cardType: 1
   Damage: 2
   IsPlayerCard: 0
-  uniqueCard: 0
+  uniqueCard: 2
   AlreadySetup: 0
   isSpecial: 1
   UsedCard: 0
   TrulyActive: 0
   WillBeAssigned: 1
   InfoText: {fileID: 0}
-  EffectText: Reverse card typing bonus.
+  EffectText: Double suit bonus.
 --- !u!1 &6624422637865189120
 GameObject:
   m_ObjectHideFlags: 0
