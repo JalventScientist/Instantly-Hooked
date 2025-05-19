@@ -1081,73 +1081,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isVisible: 0
---- !u!114 &1521691797310647634
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8165409208962179501}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 05789f58ef3ed44489cf644355a6103e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  allCards:
-  - AH
-  - 2H
-  - 3H
-  - 4H
-  - 5H
-  - 6H
-  - 7H
-  - 8H
-  - 9H
-  - 0H
-  - JH
-  - QH
-  - KH
-  - AD
-  - 2D
-  - 3D
-  - 4D
-  - 5D
-  - 6D
-  - 7D
-  - 8D
-  - 9D
-  - 0D
-  - JD
-  - QD
-  - KD
-  - AS
-  - 2S
-  - 3S
-  - 4S
-  - 5S
-  - 6S
-  - 7S
-  - 8S
-  - 9S
-  - 0S
-  - JS
-  - QS
-  - KS
-  - AC
-  - 2C
-  - 3C
-  - 4C
-  - 5C
-  - 6C
-  - 7C
-  - 8C
-  - 9C
-  - 0C
-  - JC
-  - QC
-  - KC
-  drawDeck: []
-  discardDeck: []
 --- !u!1 &1543324329871188724
 GameObject:
   m_ObjectHideFlags: 0
@@ -1775,7 +1708,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2721099799368946753}
   - component: {fileID: 5346222254480017278}
-  - component: {fileID: 1521691797310647634}
   - component: {fileID: 5827566127435484442}
   - component: {fileID: 916154116226545253}
   m_Layer: 0
