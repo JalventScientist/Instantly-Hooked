@@ -1,5 +1,8 @@
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
+using TMPro;
+using NUnit.Framework.Constraints;
 
 public class Util : MonoBehaviour
 {
@@ -68,5 +71,20 @@ public class Util : MonoBehaviour
             }
         }
         return -1;
+    }
+
+    IEnumerator TypeWriteAnim(string text, TMP_Text asset, float delay)
+    {
+        WaitForSeconds wait = new WaitForSeconds(delay);
+        for (int i = 0; i < text.Length; i++)
+        {
+            asset.text += text[i];
+            yield return new WaitForSeconds(delay);
+        }
+    }
+
+    public void TypeWrite(string text, TMP_Text asset, float delay = 0.05f)
+    {
+        StartCoroutine(TypeWriteAnim(text, asset, delay));
     }
 }

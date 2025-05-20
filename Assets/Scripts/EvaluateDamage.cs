@@ -1,7 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
 using Unity.VisualScripting;
 using TMPro;
+using System;
 
 public enum CardType
 {
@@ -15,11 +17,12 @@ public class EvaluateDamage : MonoBehaviour
     List<Card> EnemyCard = new List<Card>();
     List<Card> PlayerCard = new List<Card>();
 
-    Card PlayerBuffCard = null;
-    Card EnemyBuffCard = null;
+    List<Card> PlayerBuffCard = new List<Card>();
+    List<Card> EnemyBuffCard = new List<Card>();
 
     BasicEnemy EnemyScript;
     ReadDeck ReadDeckScript;
+    AnimateCam CamAnimator;
 
     [SerializeField] TMP_Text PlayerHealthText;
     [SerializeField] TMP_Text EnemyHealthText;
@@ -43,6 +46,7 @@ public class EvaluateDamage : MonoBehaviour
 
     private void Start()
     {
+        CamAnimator = FindFirstObjectByType<AnimateCam>();
         EnemyScript = GetComponent<BasicEnemy>();
         ReadDeckScript = GetComponent<ReadDeck>();
     }
@@ -67,7 +71,7 @@ public class EvaluateDamage : MonoBehaviour
         {
             if (targetCard.uniqueCard != Uniquecard.None)
             {
-                PlayerBuffCard = targetCard;
+                PlayerBuffCard.Add(targetCard);
 
             }
             else
@@ -75,18 +79,20 @@ public class EvaluateDamage : MonoBehaviour
                 PlayerCard.Add(targetCard);
                 try
                 {
-                    if (!PlayerBuffCard.IsUnityNull() && PlayerBuffCard.uniqueCard == Uniquecard.Jack && PlayerBuffCard.cardType == CardType.Spade)
+                    if (CheckForBuff(PlayerBuffCard, CardType.Spade, Uniquecard.Jack))
                     {
                         PlayerBuffCard = null;
                     }
                     else
                     {
-                        WaitForEval();
+                        StartCoroutine(Delay(0.2f, () => { CamAnimator.ToPos(true); }));
+                        StartCoroutine(Delay(1f, () => { WaitForEval(); }));
                     }
                 }
                 catch
                 {
-                    WaitForEval();
+                    StartCoroutine(Delay(0.2f, () => { CamAnimator.ToPos(true); }));
+                    StartCoroutine(Delay(0.3f, () => { WaitForEval(); }));
                 }
             }
             
@@ -95,13 +101,39 @@ public class EvaluateDamage : MonoBehaviour
         {
             if (targetCard.uniqueCard != Uniquecard.None)
             {
-                EnemyBuffCard = targetCard;
+                EnemyBuffCard.Add(targetCard);
             }
             else
             {
                 EnemyCard.Add(targetCard);
             }
         }
+    }
+
+    bool CheckForBuff(List<Card> target, CardType type, Uniquecard Unique)
+    {
+        foreach (Card buffCard in target)
+        {
+            if (buffCard.uniqueCard == Unique && buffCard.cardType == type)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    bool CheckForBuff(Card target, CardType type, Uniquecard Unique)
+    {
+        if(target.IsUnityNull())
+        {
+            return false;
+        } else
+        {
+            if (target.uniqueCard == Unique && target.cardType == type)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void ClearEval()
@@ -120,7 +152,13 @@ public class EvaluateDamage : MonoBehaviour
         ReadDeckScript.SetCardActivity(false);
         EnemyScript.SelectCard(true, EnemyMoves);
     }
-    
+
+    IEnumerator Delay(float delayTime, Action callback)
+    {
+        yield return new WaitForSeconds(delayTime);
+        callback();
+    }
+
     int StackRawDamage(List<Card> cards)
     {
         int RawDamage = 0;
@@ -131,21 +169,61 @@ public class EvaluateDamage : MonoBehaviour
         return RawDamage;
     }
     
+    public IEnumerator EvalDamage_Anim()
+    {
+        bool TargetsPlayer = false;
+        int InitialDamage = 0;
+        int FinalDamage = 0;
+
+        yield return new WaitForSeconds(0.5f);
+        int PlayerIntendedDamage = StackRawDamage(PlayerCard);
+        int EnemyIntendedDamage = StackRawDamage(EnemyCard);
+    }
+
+    void ShowChangedNumbers()
+    {
+
+    }
+
+    void CreateBuffEffect()
+    {
+
+    }
+
+    List<Card> GetKings(List<Card> Reference)
+    {
+        List<Card> Kings = new(2);
+        foreach(Card card in Reference)
+        {
+            if (CheckForBuff(card, CardType.Spade, Uniquecard.King))
+            {
+                Kings.Insert(0, card);
+            } else if(CheckForBuff(card, CardType.Heart, Uniquecard.King))
+            {
+                Kings.Insert(1, card);
+            }
+        }
+        return Kings;
+    }
+
     public void EvalDamage()
     {
         bool TargetsPlayer = false;
         int InitialDamage = 0;
         int FinalDamage = 0;
 
-        print(EnemyCard.Count);
         int PlayerIntendedDamage = StackRawDamage(PlayerCard);
         int EnemyIntendedDamage = StackRawDamage(EnemyCard);
 
-        //Add changes pre-attack if using Heart/Spade King
-        PlayerIntendedDamage = AffectIntended(PlayerBuffCard, EnemyBuffCard, PlayerIntendedDamage);
-        EnemyIntendedDamage = AffectIntended(EnemyBuffCard, PlayerBuffCard, EnemyIntendedDamage);
+        List<Card> PlayerKings = new List<Card>();
+        List<Card> EnemyKings = new List<Card>();
+        PlayerKings = GetKings(PlayerBuffCard);
+        EnemyKings = GetKings(EnemyBuffCard);
 
-        int[] damage = CalculateTypingAdvantage(PlayerIntendedDamage, EnemyIntendedDamage, (!PlayerBuffCard.IsUnityNull() && PlayerBuffCard.uniqueCard == Uniquecard.Ace && PlayerBuffCard.cardType == CardType.Club) || (!EnemyBuffCard.IsUnityNull() && EnemyBuffCard.uniqueCard == Uniquecard.Ace && EnemyBuffCard.cardType == CardType.Club), (!PlayerBuffCard.IsUnityNull() && PlayerBuffCard.uniqueCard == Uniquecard.Queen && PlayerBuffCard.cardType == CardType.Spade) || (!EnemyBuffCard.IsUnityNull() && EnemyBuffCard.uniqueCard == Uniquecard.Queen && EnemyBuffCard.cardType == CardType.Spade));
+        PlayerIntendedDamage = AffectIntended(PlayerKings[0], EnemyKings[1], PlayerIntendedDamage);
+        EnemyIntendedDamage = AffectIntended(EnemyKings[0], PlayerKings[1], EnemyIntendedDamage);
+
+        int[] damage = CalculateTypingAdvantage(PlayerIntendedDamage, EnemyIntendedDamage, CheckForBuff(PlayerBuffCard, CardType.Club, Uniquecard.Ace) || CheckForBuff(EnemyBuffCard, CardType.Club, Uniquecard.Ace), CheckForBuff(PlayerBuffCard, CardType.Spade, Uniquecard.Queen) || CheckForBuff(EnemyBuffCard, CardType.Spade, Uniquecard.Queen));
         PlayerIntendedDamage = damage[0];
         EnemyIntendedDamage = damage[1];
 
@@ -156,15 +234,15 @@ public class EvaluateDamage : MonoBehaviour
 
         try //Buff cards may trigger a null error on this so it's put in a try
         {
-            if ((!PlayerBuffCard.IsUnityNull() && PlayerBuffCard.uniqueCard == Uniquecard.Jack && PlayerBuffCard.cardType == CardType.Heart) || (!EnemyBuffCard.IsUnityNull() && EnemyBuffCard.uniqueCard == Uniquecard.Jack && EnemyBuffCard.cardType == CardType.Heart))
+            if (CheckForBuff(PlayerBuffCard, CardType.Heart, Uniquecard.Jack) || CheckForBuff(EnemyBuffCard, CardType.Heart, Uniquecard.Jack))
             {
                 InitialDamage = 0;
             }
-            else if ((!PlayerBuffCard.IsUnityNull() && PlayerBuffCard.uniqueCard == Uniquecard.Ace && PlayerBuffCard.cardType == CardType.Spade) && InitialDamage < 0)
+            else if (CheckForBuff(PlayerBuffCard, CardType.Spade, Uniquecard.Ace) && InitialDamage < 0)
             {
                 InitialDamage = -InitialDamage;
             }
-            else if ((!EnemyBuffCard.IsUnityNull() && EnemyBuffCard.uniqueCard == Uniquecard.Ace && EnemyBuffCard.cardType == CardType.Spade) && InitialDamage > 0)
+            else if (CheckForBuff(EnemyBuffCard, CardType.Spade, Uniquecard.Ace) && InitialDamage > 0)
             {
                 InitialDamage = -InitialDamage;
             }

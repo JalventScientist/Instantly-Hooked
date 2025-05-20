@@ -42,6 +42,7 @@ public class ReadDeck : MonoBehaviour
     }
     private void Start()
     {
+        
         StartCoroutine(GetBasePull());
     }
 
