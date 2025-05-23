@@ -73,7 +73,7 @@ public class Util : MonoBehaviour
         return -1;
     }
 
-    IEnumerator TypeWriteAnim(string text, TMP_Text asset, float delay)
+    static IEnumerator TypeWriteAnim(string text, TMP_Text asset, float delay)
     {
         WaitForSeconds wait = new WaitForSeconds(delay);
         for (int i = 0; i < text.Length; i++)
@@ -83,8 +83,8 @@ public class Util : MonoBehaviour
         }
     }
 
-    public void TypeWrite(string text, TMP_Text asset, float delay = 0.05f)
+    static public void TypeWrite(MonoBehaviour runner,string text, TMP_Text asset, float delay = 0.05f)
     {
-        StartCoroutine(TypeWriteAnim(text, asset, delay));
+        runner.StartCoroutine(TypeWriteAnim(text, asset, delay));
     }
 }

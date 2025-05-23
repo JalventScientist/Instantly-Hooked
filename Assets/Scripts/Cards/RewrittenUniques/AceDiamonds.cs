@@ -7,6 +7,7 @@ public class AceDiamonds : Card
 
     void Start()
     {
+        WillBeAssigned = false;
         deck = FindFirstObjectByType<ReadDeck>();
     }
 
