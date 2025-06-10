@@ -60,6 +60,8 @@ public class EvaluateDamage : MonoBehaviour
 
     private char[] typeChart = { 'H', 'C', 'D', 'S' };
 
+    List<textshow> BuffVisuals = new List<textshow>();
+
     private void Start()
     {
         CamAnimator = FindFirstObjectByType<AnimateCam>();
@@ -155,17 +157,9 @@ public class EvaluateDamage : MonoBehaviour
     {
 
         SetEvalTexts(false, true);
-        foreach(RectTransform child in Center)
+        foreach(textshow fx in BuffVisuals)
         {
-            Destroy(child.gameObject);
-        }
-        foreach(RectTransform child in playerSide)
-        {
-            Destroy(child.gameObject);
-        }
-        foreach (RectTransform child in enemySide)
-        {
-            Destroy(child.gameObject);
+            fx.SetAppearance(false);
         }
         PlayerCard.Clear();
         EnemyCard.Clear();
@@ -202,6 +196,7 @@ public class EvaluateDamage : MonoBehaviour
     void CreateBuffEffect(string text, bool isPositive, bool isPlayerSide, bool isCenter = false)
     {
         GameObject effectMain = Instantiate(effectPreset, new Vector3(0, 0, 0), Quaternion.identity);
+        BuffVisuals.Add(effectMain.GetComponent<textshow>());
         TMP_Text effectText = effectMain.GetComponent<TMP_Text>();
         string finalText;
         if (!isCenter)
@@ -223,14 +218,6 @@ public class EvaluateDamage : MonoBehaviour
         }
 
             
-        Util.TypeWrite(this, finalText, effectText, 0.05f);
-    }
-
-    void CreateBuffEffect(string text, bool isPositive, TMP_Text effectText)
-    {
-        GameObject effectMain = Instantiate(effectPreset, new Vector3(0, 0, 0), Quaternion.identity);
-        string finalText;
-        finalText = isPositive ? "+" + text : "-" + text;
         Util.TypeWrite(this, finalText, effectText, 0.05f);
     }
 
@@ -285,6 +272,7 @@ public class EvaluateDamage : MonoBehaviour
         {
             currentNum += (int)char.GetNumericValue(c);
         }
+        print("Comparing" + currentNum.ToString() + " to " + targetNum.ToString());
         bool EffectType = currentNum < targetNum ? true : false; //shows whether the effect is positive or negative
         if (!Center)
         {
@@ -314,6 +302,7 @@ public class EvaluateDamage : MonoBehaviour
         {
             currentNum += (int)char.GetNumericValue(c);
         }
+        print("Comparing" + currentNum.ToString() + " to " + targetNum.ToString());
         bool EffectType = currentNum < targetNum ? true : false; //shows whether the effect is positive or negative
         if (!Center)
         {

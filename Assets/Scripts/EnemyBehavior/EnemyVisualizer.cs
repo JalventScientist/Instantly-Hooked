@@ -10,6 +10,8 @@ public class EnemyVisualizer : MonoBehaviour
     public bool isVisible = false;
     HorizontalLayoutGroup layoutGroup;
 
+    [SerializeField] Animator animator;
+
     bool set = false;
 
     private void Start()
@@ -30,17 +32,21 @@ public class EnemyVisualizer : MonoBehaviour
     IEnumerator displayCards()
     {
         bool clickclack = true;
-        for(int i = 0; i< 2; i++)
+        animator.SetBool("ViewCards", true);
+        for (int i = 0; i< 2; i++)
         {
             WaitForFixedUpdate fixedUpdate = new WaitForFixedUpdate();
             DOTween.To(() => layoutGroup.spacing, x => layoutGroup.spacing = x, clickclack ? 0 : -69, .5f).SetEase(Ease.InOutSine);
-            foreach (GameObject card in Deck.EnemyDeck)
+
+            foreach (GameObject card in Deck.PlayerDeck)
             {
                 Card script = card.GetComponent<Card>();
                 script.TurnCard(clickclack);
                 yield return fixedUpdate;
             }
-            foreach (GameObject card in Deck.PlayerDeck)
+            animator.SetBool("ViewCards", false);
+            yield return new WaitForSeconds(0.5f);
+            foreach (GameObject card in Deck.EnemyDeck)
             {
                 Card script = card.GetComponent<Card>();
                 script.TurnCard(clickclack);

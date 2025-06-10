@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class ReadDeck : MonoBehaviour
 {
+    int TotalTurns;
 
     [Header("Generation")]
     [SerializeField] private List<string> allCards = new List<string>();
@@ -31,7 +32,8 @@ public class ReadDeck : MonoBehaviour
     WaitForSeconds DefaultDelay = new WaitForSeconds(0.5f);
     WaitForFixedUpdate waitFixed = new WaitForFixedUpdate();
 
-
+    [SerializeField] Transform cam;
+    [SerializeField] GameObject shuffleIndicator;
     private void Awake()
     {
         DeckAnimator = FindFirstObjectByType<DeckVisualizer>();
@@ -40,9 +42,8 @@ public class ReadDeck : MonoBehaviour
         Util.ShuffleFromDeckIntoDeck(allCards, drawDeck);
         DeckAnimator.UpdateDecks();
     }
-    private void Start()
+    public void Init()
     {
-        
         StartCoroutine(GetBasePull());
     }
 
@@ -64,6 +65,20 @@ public class ReadDeck : MonoBehaviour
         FindFirstObjectByType<BasicEnemy>().GetDeck();
         SetCardActivity();
         
+    }
+
+    IEnumerator shakeCam()
+    {
+        shuffleIndicator.SetActive(true);
+        for(int i = 0; i < 10; i++)
+        {
+            cam.localPosition = new Vector3(Random.Range(-0.1f, 0.1f), Random.Range(-0.1f, 0.1f), Random.Range(-0.1f,0.1f));
+            yield return waitFixed;
+        }
+        cam.localPosition = Vector3.zero;
+        yield return new WaitForSeconds(1);
+
+        shuffleIndicator.SetActive(false);
     }
 
     public void SetCardActivity(bool toggle = true) //Toggles if cards can be used or not to prevent premature clicks
@@ -227,6 +242,7 @@ public class ReadDeck : MonoBehaviour
 
     public IEnumerator RenewDecks()
     {
+        StartCoroutine(shakeCam());
         Reshuffling = true;
         SetCardActivity(false);
         yield return unloadCards;
