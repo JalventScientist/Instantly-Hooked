@@ -86,7 +86,7 @@ public class Card : MonoBehaviour
             }
             float Offset = -1.494f + (IsPlayerCard ? (float)(evaluateDamage.PlayerCardsPlayed -1) / 20 : (float)(evaluateDamage.EnemyCardsPlayed-1) / 20);
                 GameObject throwCard = Instantiate(Resources.Load<GameObject>("Prefabs/Cards/ThrownCard"), new Vector3(0, Offset, IsPlayerCard ? -5 : 5), Quaternion.identity);
-            throwCard.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+            throwCard.transform.localScale = new Vector3(0.06f, 0.06f, 0.06f);
             throwCard.GetComponent<ThrowCard>().RenderProperCard(transform.name, IsPlayerCard);
             ButtonTransform.GetComponent<Button>().enabled = false;
             ButtonTransform.DOLocalMoveY(-700f,0.3f).SetEase(Ease.InOutQuad);

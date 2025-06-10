@@ -76,6 +76,7 @@ public class ReadDeck : MonoBehaviour
         {
             card.GetComponent<Card>().TrulyActive = toggle;
         }
+        print("Activated all cards");
     }
 
     public IEnumerator PullOneSide(int count, bool ForPlayer, bool IsMidGame = false)

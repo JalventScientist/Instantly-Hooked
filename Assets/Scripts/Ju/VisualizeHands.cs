@@ -1,10 +1,5 @@
-using NUnit.Framework;
-using UnityEditorInternal;
 using System.Collections.Generic;
 using UnityEngine;
-using Unity.VisualScripting;
-using UnityEngine.UI;
-using UnityEditor;
 
 public class VisualizeHands : MonoBehaviour
 {

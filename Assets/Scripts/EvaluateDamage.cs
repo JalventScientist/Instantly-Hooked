@@ -206,7 +206,14 @@ public class EvaluateDamage : MonoBehaviour
         string finalText;
         if (!isCenter)
         {
-            effectMain.transform.parent = isPlayerSide ? playerSide : enemySide;
+            if (isPlayerSide)
+            {
+                effectMain.transform.parent = playerSide;
+            }
+            else
+            {
+                effectMain.transform.parent = enemySide;
+            }
             finalText = isPositive ? "+" + text : "-" + text;
         }
         else
@@ -216,6 +223,14 @@ public class EvaluateDamage : MonoBehaviour
         }
 
             
+        Util.TypeWrite(this, finalText, effectText, 0.05f);
+    }
+
+    void CreateBuffEffect(string text, bool isPositive, TMP_Text effectText)
+    {
+        GameObject effectMain = Instantiate(effectPreset, new Vector3(0, 0, 0), Quaternion.identity);
+        string finalText;
+        finalText = isPositive ? "+" + text : "-" + text;
         Util.TypeWrite(this, finalText, effectText, 0.05f);
     }
 
@@ -247,12 +262,19 @@ public class EvaluateDamage : MonoBehaviour
         StartCoroutine(EvalDamage_Anim());
     }
 
-    public void SetText(bool Playerside, int targetNum, bool Center = false)
+    public void SetText(bool Playerside, int targetNum, bool Center = false, bool StackEffect = false)
     {
         TMP_Text target;
         if (!Center)
         {
-            target = playerSide ? PlayerDam : EnemyDam;
+            if (Playerside)
+            {
+                target = PlayerDam;
+            }
+            else
+            {
+                target = EnemyDam;
+            }
         } else
         {
             target = Total;
@@ -266,10 +288,45 @@ public class EvaluateDamage : MonoBehaviour
         bool EffectType = currentNum < targetNum ? true : false; //shows whether the effect is positive or negative
         if (!Center)
         {
-            target.color = EffectType ? new Color(0.5f, 1, 0.5f, 1) : new Color(1, 0.5f, 0.5f, 1); //Green for positive red for negative
+            target.rectTransform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+            target.rectTransform.DOScale(Vector3.one, 0.5f).SetEase(Ease.OutBack);
+            target.color = EffectType ? new Color(0.5f, 1, 0.5f) : new Color(1, 0.5f, 0.5f); //Green for positive red for negative
+        } else
+        {
+            if (StackEffect) 
+            {
+                target.rectTransform.localScale = new Vector3(1.8f, 1.8f, 1.8f);
+                target.rectTransform.DOScale(new Vector3(1.5f, 1.5f, 1.5f), 0.5f).SetEase(Ease.OutBack);
+            } else
+            {
+                target.rectTransform.DOScale(new Vector3(1.5f, 1.5f, 1.5f), 0.5f).SetEase(Ease.OutBack);
+            }
         }
         target.text = targetNum.ToString();
-        target.DOColor(new Color(1, 1, 1,1), 0.5f);
+        target.DOColor(new Color(1, 1, 1), 0.5f);
+    }
+
+    public void SetText(TMP_Text target, int targetNum, bool Center = false)
+    {
+        int currentNum = 0;
+
+        foreach (char c in target.text)
+        {
+            currentNum += (int)char.GetNumericValue(c);
+        }
+        bool EffectType = currentNum < targetNum ? true : false; //shows whether the effect is positive or negative
+        if (!Center)
+        {
+            target.rectTransform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+            target.rectTransform.DOScale(Vector3.one, 0.5f).SetEase(Ease.OutBack);
+            target.color = EffectType ? new Color(0.5f, 1, 0.5f) : new Color(1, 0.5f, 0.5f); //Green for positive red for negative
+        }
+        else
+        {
+            target.rectTransform.DOScale(new Vector3(1.5f, 1.5f, 1.5f), 0.5f).SetEase(Ease.OutBack);
+        }
+        target.text = targetNum.ToString();
+        target.DOColor(new Color(1, 1, 1), 0.5f);
     }
 
     void SetEvalTexts(bool toggle, bool includeCenter = false)
@@ -278,19 +335,21 @@ public class EvaluateDamage : MonoBehaviour
         {
             PlayerDam.rectTransform.localPosition = Vector3.zero;
             EnemyDam.rectTransform.localPosition = Vector3.zero;
-            PlayerDam.rectTransform.DOLocalMoveX(-488.9f, 0.5f);
-            EnemyDam.rectTransform.DOLocalMoveX(488.9f, 0.5f);
+            PlayerDam.rectTransform.DOLocalMoveX(-200f, 0.5f).SetEase(Ease.OutQuad);
+            EnemyDam.rectTransform.DOLocalMoveX(200f, 0.5f).SetEase(Ease.OutQuad);
             PlayerDam.color = new Color(1, 1, 1, 0);
             EnemyDam.color = new Color(1, 1, 1, 0);
         } else
         {
-            PlayerDam.rectTransform.DOLocalMoveX(0, 0.5f);
-            EnemyDam.rectTransform.DOLocalMoveX(0, 0.5f);
+            PlayerDam.rectTransform.DOLocalMoveX(0, 0.5f).SetEase(Ease.InQuad);
+            EnemyDam.rectTransform.DOLocalMoveX(0, 0.5f).SetEase(Ease.InQuad);
         }
-            PlayerDam.DOColor(toggle ? new Color(1, 1, 1, 1) : new Color(1, 1, 1, 0), 0.5f);
-        EnemyDam.DOColor(toggle ? new Color(1, 1, 1, 1) : new Color(1, 1, 1, 0), 0.5f);
+            PlayerDam.DOColor(toggle ? new Color(1, 1, 1, 1) : new Color(1, 1, 1, 0), 0.5f).SetEase(Ease.InQuad);
+        EnemyDam.DOColor(toggle ? new Color(1, 1, 1, 1) : new Color(1, 1, 1, 0), 0.5f).SetEase(Ease.InQuad);
         if(includeCenter)
         {
+            Total.rectTransform.localScale = Vector3.one;
+            Total.text = "0";
             Total.DOColor(toggle ? new Color(1, 1, 1, 1) : new Color(1, 1, 1, 0), 0.5f);
         }
     }
@@ -344,7 +403,7 @@ public class EvaluateDamage : MonoBehaviour
         }
         SetEvalTexts(false, false);
         InitialDamage = PlayerIntendedDamage - EnemyIntendedDamage;
-        yield return def;
+        yield return new WaitForSeconds(0.4f);
         SetText(true, Mathf.Abs(InitialDamage), true);
         yield return def;
 
@@ -492,7 +551,7 @@ public class EvaluateDamage : MonoBehaviour
             CreateBuffEffect("Suit bonus", true, true);
             print("Typing favors player");
             playerDamage += Mathf.RoundToInt(playerDamage *(queenOfSpades ? 1 : .5f));
-            SetText(true, playerDamage);
+            SetText(PlayerDam, playerDamage);
             TempDebounce = true;
         }
         else if (typingAdvantage < 0)
@@ -500,7 +559,7 @@ public class EvaluateDamage : MonoBehaviour
             print("Typing favors enemy");
             CreateBuffEffect("Suit bonus", true, false);
             enemyDamage += Mathf.RoundToInt(enemyDamage * (queenOfSpades ? 1 : .5f));
-            SetText(false, enemyDamage);
+            SetText(EnemyDam, enemyDamage);
             TempDebounce = true;
         }
         else
