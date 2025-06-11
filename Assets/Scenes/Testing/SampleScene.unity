@@ -1948,6 +1948,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 676029497}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &1324947961 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 8432421a7083a494683b743c8ea4f4c0, type: 3}
+  m_PrefabInstance: {fileID: 605557152}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1365720755
 GameObject:
   m_ObjectHideFlags: 0
@@ -3245,6 +3250,7 @@ GameObject:
   - component: {fileID: 5346222254480017278}
   - component: {fileID: 5827566127435484442}
   - component: {fileID: 916154116226545253}
+  - component: {fileID: 8165409208962179502}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -3252,6 +3258,20 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &8165409208962179502
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8165409208962179501}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fda7ad53e6f085b47991dc6db4b94837, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dialog: {fileID: 0}
+  Chair: {fileID: 1324947961}
 --- !u!1 &8669929834707242504
 GameObject:
   m_ObjectHideFlags: 0
