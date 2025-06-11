@@ -43,7 +43,7 @@ public class IntroSequence : MonoBehaviour
 
     IEnumerator Sequence()
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(2.75f);
         Chair.DOLocalMove(new Vector3(1.41999996f, -4.98999977f, -6), 0.75f).SetEase(Ease.InOutSine); 
         Chair.DOLocalRotate(new Vector3(270, 123.112358f, 0), .75f).SetEase(Ease.InOutSine);
         GameStarter.Init();
