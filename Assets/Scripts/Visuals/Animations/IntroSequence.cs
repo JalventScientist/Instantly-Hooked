@@ -14,10 +14,13 @@ public class IntroSequence : MonoBehaviour
     bool CheckingDialogue = false;
 
     [SerializeField] Transform Chair;
+
+    TutorialLogger tutlog;
     private void Start()
     {
+        tutlog = FindFirstObjectByType<TutorialLogger>();
         GameStarter = GetComponent<ReadDeck>();
-        if(TutorialLogger.IncludeTutorial == false)
+        if(tutlog.IncludeTutorial == false)
         {
             Dialogue.Clear();
             Dialogue.Add("Welcome back. Let's get started.");

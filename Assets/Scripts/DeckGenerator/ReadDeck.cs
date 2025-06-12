@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class ReadDeck : MonoBehaviour
 {
-    int TotalTurns;
 
     [Header("Generation")]
     [SerializeField] private List<string> allCards = new List<string>();
@@ -34,8 +33,17 @@ public class ReadDeck : MonoBehaviour
 
     [SerializeField] Transform cam;
     [SerializeField] GameObject shuffleIndicator;
+
+    //To gradually add face cards:
+    [SerializeField] List<bool> enabledFaces = new List<bool>(4); //1 = Spades, 2 = Hearts, 3 = Diamonds, 4 = Clubs. If a face card is enabled, it will be added to the deck.
+    DialogueSystem dialogSystem;
+
+    TutorialLogger tutlog;
+
     private void Awake()
     {
+        tutlog = FindFirstObjectByType<TutorialLogger>();
+        dialogSystem = GetComponent<DialogueSystem>();
         DeckAnimator = FindFirstObjectByType<DeckVisualizer>();
         drawAndDiscardDeck[0] = drawDeck;
         drawAndDiscardDeck[1] = discardDeck;
@@ -44,6 +52,13 @@ public class ReadDeck : MonoBehaviour
     }
     public void Init()
     {
+        if(tutlog.IncludeTutorial == false)
+        {
+            for(int i = 0; i < enabledFaces.Count; i++)
+            {
+                enabledFaces[i] = true; //Enable all face cards
+            }
+        }
         StartCoroutine(GetBasePull());
     }
 
@@ -176,10 +191,49 @@ public class ReadDeck : MonoBehaviour
     public void PullDeck(bool playerCard)
     {
         string SelectedCard = "";
-        // Check if drawDeck is not empty before accessing the last element
-        if (drawDeck.Count > 0)
+        List<string> tempDeck = new List<string>(drawDeck); // Used to filter out unused face cards
+
+        foreach(string _card in drawDeck)
         {
-            SelectedCard = drawDeck[drawDeck.Count - 1];
+            List<string> str = new List<string>();
+            foreach (char c in _card)
+            {
+                str.Add(c.ToString());
+            }
+            if (int.TryParse(str[0], out int num))
+            {
+                continue; //If the card is a number, skip it because number cards are guaranteed to be played
+            } else
+            {
+                int faceCardIndex = 0;
+                switch (str[1])
+                {
+                    //Check the suit of the card
+                    case "S":
+                        faceCardIndex = 0; //Spades
+                        break;
+                    case "H":
+                        faceCardIndex = 1; //Hearts
+                        break;
+                    case "D":
+                        faceCardIndex = 2; //Diamonds
+                        break;
+                    case "C":
+                        faceCardIndex = 3; //Clubs
+                        break;
+                }
+                if(enabledFaces[faceCardIndex] == false) //If the face card is enabled, add it to the tempDeck
+                {
+                    tempDeck.Remove(_card);
+                }
+            }
+        }
+
+
+        // Check if drawDeck is not empty before accessing the last element
+        if (tempDeck.Count > 0)
+        {
+            SelectedCard = tempDeck[tempDeck.Count - 1];
         }
         else
         {
@@ -235,8 +289,45 @@ public class ReadDeck : MonoBehaviour
         cardScript.SetupCard();
     }
 
-    public void Regen()
+    public void EnableRandomFace()
     {
+        List<bool> tempEnabledFaces = new List<bool>(enabledFaces);
+        foreach (bool face in enabledFaces)
+        {
+            if(face == true)
+            {
+                tempEnabledFaces.Remove(face);
+            }
+        }
+        if(tempEnabledFaces.Count > 0)
+        {
+            int randomIndex = Random.Range(0, tempEnabledFaces.Count);
+            int TextIndex = enabledFaces.IndexOf(tempEnabledFaces[randomIndex]);
+            enabledFaces[enabledFaces.IndexOf(tempEnabledFaces[randomIndex])] = true; //Enable a random face card
+            switch (TextIndex)
+            {
+                case 0:
+                    dialogSystem.SingleDialog("I've put the face cards of spades in");
+                    break;
+                case 1:
+                    dialogSystem.SingleDialog("I've put the face cards of hearts in");
+                    break;
+                case 2:
+                    dialogSystem.SingleDialog("I've put the face cards of diamonds in.");
+                    break;
+                case 3:
+                    dialogSystem.SingleDialog("I've put the face cards of clubs in.");
+                    break;
+            }
+        }
+    }
+
+    public void Regen(bool IncludeNewDeck = false)
+    {
+        if (IncludeNewDeck)
+        {
+            EnableRandomFace();
+        }
         StartCoroutine(UpdateDecksAnimated());
     }
 

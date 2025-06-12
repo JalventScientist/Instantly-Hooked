@@ -29,6 +29,13 @@ public class DialogueSystem : MonoBehaviour
         AlternativeClick = toggle;
     }
 
+    Camera mainCamera;
+
+    private void Start()
+    {
+        mainCamera = Camera.main;
+    }
+
     private void Update()
     {
         if (!WaitingForNextList)
@@ -51,6 +58,7 @@ public class DialogueSystem : MonoBehaviour
                         DialogueFinished = true;
                         WaitingForNextList = true;
                         AlternativeClickButton.gameObject.SetActive(false);
+                        mainCamera.DOFieldOfView(60, 0.5f).SetEase(Ease.InOutSine);
                         DialogueText.DOColor(new Color(1, 1, 1, 0), 0.5f).SetEase(Ease.InOutSine).OnComplete(() => 
                         {
                             DialogueText.text = "";
@@ -70,8 +78,14 @@ public class DialogueSystem : MonoBehaviour
 
     }
 
+    public void SingleDialog(string _text, float delay = 0.05f)
+    {
+        StartCoroutine(TypeWriteSingle(_text, delay));
+    }
+
     public void DialogueSequence(List<string> _list)
     {
+        mainCamera.DOFieldOfView(52, 0.5f).SetEase(Ease.InOutSine);
         AlternativeClickButton.gameObject.SetActive(true);
         DialogueList = _list;
         DialogueFinished = false;
@@ -85,6 +99,7 @@ public class DialogueSystem : MonoBehaviour
 
     IEnumerator TypeWriteAnim(string text, float delay)
     {
+        DialogueText.color = new Color(1, 1, 1, 1);
         DialogueText.text = "";
         Debounce = true;
         WaitingForNext = false;
@@ -104,5 +119,21 @@ public class DialogueSystem : MonoBehaviour
         HitSkip = false;
         WaitingForNext = true;
         DialogueText.text = text + "<size=15><color=grey>(click to continue)";
+    }
+
+    IEnumerator TypeWriteSingle(string text, float delay)
+    {
+        DialogueText.color = new Color(1, 1, 1, 1);
+        DialogueText.text = "";
+        for (int i = 0; i < text.Length; i++)
+        {
+                DialogueText.text += text[i];
+                yield return new WaitForSeconds(delay);
+        }
+        yield return new WaitForSeconds((text.Length / 20) + 0.5f);
+        DialogueText.DOColor(new Color(1, 1, 1, 0), 0.5f).SetEase(Ease.InOutSine).OnComplete(() =>
+        {
+            DialogueText.text = "";
+        });
     }
 }
