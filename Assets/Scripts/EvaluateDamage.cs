@@ -61,9 +61,19 @@ public class EvaluateDamage : MonoBehaviour
     private char[] typeChart = { 'H', 'C', 'D', 'S' };
 
     List<textshow> BuffVisuals = new List<textshow>();
+    DialogueSystem dialogSystem;
+
+    TutorialLogger tutlog;
+
+    [SerializeField] int TurnsUntilFace = 4;
+    int usedTurns = 0;
+
+    bool WaitExtra = false;
 
     private void Start()
     {
+        tutlog = FindFirstObjectByType<TutorialLogger>();
+        dialogSystem = GetComponent<DialogueSystem>();
         CamAnimator = FindFirstObjectByType<AnimateCam>();
         EnemyScript = GetComponent<BasicEnemy>();
         ReadDeckScript = GetComponent<ReadDeck>();
@@ -345,6 +355,7 @@ public class EvaluateDamage : MonoBehaviour
 
     public IEnumerator EvalDamage_Anim()
     {
+        usedTurns++;
         bool TargetsPlayer = false;
         int InitialDamage = 0;
         int FinalDamage = 0;
@@ -366,8 +377,14 @@ public class EvaluateDamage : MonoBehaviour
         EnemyIntendedDamage = damage[1];
         if (TempDebounce)
         {
-            yield return def;
-            TempDebounce = false;
+            if (WaitExtra)
+            {
+                yield return new WaitForSeconds(2f);
+            } else
+            {
+                yield return def;
+            }
+                TempDebounce = false;
         }
         PlayerIntendedDamage = AffectIntended(PlayerKings[0], EnemyKings[1], PlayerIntendedDamage);
         if (TempDebounce)
@@ -449,8 +466,31 @@ public class EvaluateDamage : MonoBehaviour
         //Save last move for Ace of Hearts
         LastDealtDamage = FinalDamage;
         TargetedPlayer = TargetsPlayer;
-        ReadDeckScript.Regen();
-        ClearEval();
+        if (tutlog.isFirstEverTurn)
+        {
+            ClearEval();
+            List<string> dialog = new List<string>();
+            dialog.Add("Something I forgot to mention.");
+            dialog.Add("Cards can have winning suits, adding a 1.5x boost to the value.");
+            dialog.Add("Hearts beat Clubs,");
+            dialog.Add("Clubs beat Diamonds,");
+            dialog.Add("Diamonds beat Spades,");
+            dialog.Add("and Spades beat Hearts.");
+            dialog.Add("Of course, I won't just show you my cards, so try getting lucky.");
+            dialogSystem.DialogueSequence(dialog);
+            yield return new WaitUntil(() => dialogSystem.DialogueFinished);
+            tutlog.isFirstEverTurn = false;
+        }
+        if(usedTurns >= TurnsUntilFace)
+        {
+            usedTurns = 0;
+            ReadDeckScript.Regen(true);
+        } else
+        {
+            ReadDeckScript.Regen();
+        }
+
+            ClearEval();
     }
 
     public int AffectIntended(Card card1, Card card2, int NumberModify)
@@ -539,6 +579,11 @@ public class EvaluateDamage : MonoBehaviour
         {
             CreateBuffEffect("Suit bonus", true, true);
             print("Typing favors player");
+            if (tutlog.isFirstEverTurn)
+            {
+                dialogSystem.SingleDialog("A suit bonus on your first move, not bad.");
+                WaitExtra = true;
+            }
             playerDamage += Mathf.RoundToInt(playerDamage *(queenOfSpades ? 1 : .5f));
             SetText(PlayerDam, playerDamage);
             TempDebounce = true;
