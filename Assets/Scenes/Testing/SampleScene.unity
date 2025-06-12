@@ -2743,7 +2743,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d9c54d9dad5b77408b33a1e94e86ff4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IncludeTutorial: 1
+  IncludeTutorial: 0
   isFirstEverTurn: 1
 --- !u!4 &1939858042
 Transform:

@@ -380,6 +380,7 @@ public class EvaluateDamage : MonoBehaviour
             if (WaitExtra)
             {
                 yield return new WaitForSeconds(2f);
+                WaitExtra = false;
             } else
             {
                 yield return def;
@@ -466,7 +467,7 @@ public class EvaluateDamage : MonoBehaviour
         //Save last move for Ace of Hearts
         LastDealtDamage = FinalDamage;
         TargetedPlayer = TargetsPlayer;
-        if (tutlog.isFirstEverTurn)
+        if (tutlog.isFirstEverTurn && tutlog.IncludeTutorial)
         {
             ClearEval();
             List<string> dialog = new List<string>();
@@ -579,7 +580,7 @@ public class EvaluateDamage : MonoBehaviour
         {
             CreateBuffEffect("Suit bonus", true, true);
             print("Typing favors player");
-            if (tutlog.isFirstEverTurn)
+            if (tutlog.isFirstEverTurn && tutlog.IncludeTutorial)
             {
                 dialogSystem.SingleDialog("A suit bonus on your first move, not bad.");
                 WaitExtra = true;
