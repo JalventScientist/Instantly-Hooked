@@ -38,6 +38,7 @@ public class Card : MonoBehaviour
 
     public bool UsedCard = false;
     public bool TrulyActive = false;
+    bool Turning = false;
 
     [HideInInspector] public bool WillBeAssigned = true;
 
@@ -103,6 +104,7 @@ public class Card : MonoBehaviour
     {
         if (toggle)
         {
+            
             cardTransform.DOLocalRotate(new Vector3(0, -90, 0), 0.25f).SetEase(Ease.InSine);
             yield return SpinTime;
             if (!IsPlayerCard)
@@ -129,6 +131,7 @@ public class Card : MonoBehaviour
             cardTransform.DOLocalRotate(new Vector3(0, 0, 0), 0.25f).SetEase(Ease.OutSine);
         }
         yield return SpinTime;
+        Turning = toggle;
         if (!toggle)
         {
             TrulyActive = true;
@@ -249,6 +252,22 @@ public class Card : MonoBehaviour
                 {
                     InfoText.DOColor(new Color(1, 1, 1, 1), 0.3f);
                 }
+            }
+        } else if ((!AlreadySetup && !Turning) && !Turning)
+        {
+            cardTransform.DOLocalMoveY(-60f, 0.3f);
+            InfoText.DOColor(new Color(1, 1, 1, 1), 0.3f);
+            if (isSpecial)
+            {
+                InfoText.DOColor(new Color(1, 1, 1, 0), 0.3f);
+            }
+        } else
+        {
+            ButtonTransform.DOSizeDelta(new Vector2(0, 379.5f), 0.3f);
+            cardTransform.DOLocalMoveY(0, 0.3f);
+            if (isSpecial)
+            {
+                InfoText.DOColor(new Color(1, 1, 1, 0), 0.3f);
             }
         }
     }
