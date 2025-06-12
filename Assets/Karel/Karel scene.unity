@@ -240,79 +240,6 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
---- !u!1001 &1182017975
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: -8679921383154817045, guid: 6ddbadaa652e05b42b266de690696820, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.5298686
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 6ddbadaa652e05b42b266de690696820, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 1.41
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 6ddbadaa652e05b42b266de690696820, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 21.291105
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 6ddbadaa652e05b42b266de690696820, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 6ddbadaa652e05b42b266de690696820, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 6ddbadaa652e05b42b266de690696820, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 6ddbadaa652e05b42b266de690696820, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 6ddbadaa652e05b42b266de690696820, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 6ddbadaa652e05b42b266de690696820, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 6ddbadaa652e05b42b266de690696820, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -7043982916140844903, guid: 6ddbadaa652e05b42b266de690696820, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: 4d5ef0fe5c2848a4ea6a0edc2d1f4920, type: 2}
-    - target: {fileID: 535309557668632908, guid: 6ddbadaa652e05b42b266de690696820, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: 516750d8c915d8441bfd53483005648f, type: 2}
-    - target: {fileID: 919132149155446097, guid: 6ddbadaa652e05b42b266de690696820, type: 3}
-      propertyPath: m_Name
-      value: Jimmy sitting (no animation)
-      objectReference: {fileID: 0}
-    - target: {fileID: 8656938338488965534, guid: 6ddbadaa652e05b42b266de690696820, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: a5e93d8da7d904a4bbd10d9d2d43cf4b, type: 2}
-    - target: {fileID: 9092165191062141149, guid: 6ddbadaa652e05b42b266de690696820, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: c50fcb816b6dad64d8b058c3c4c9ef8a, type: 2}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 6ddbadaa652e05b42b266de690696820, type: 3}
 --- !u!1 &1937506670
 GameObject:
   m_ObjectHideFlags: 0
@@ -405,10 +332,67 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &8491987892645529669
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1407586565548350662, guid: 0fb553cf8247c7c4c9a1f1b1829a3dab, type: 3}
+      propertyPath: m_Name
+      value: Jimmy sitting (no animation)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1784287652438034044, guid: 0fb553cf8247c7c4c9a1f1b1829a3dab, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.5298686
+      objectReference: {fileID: 0}
+    - target: {fileID: 1784287652438034044, guid: 0fb553cf8247c7c4c9a1f1b1829a3dab, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.41
+      objectReference: {fileID: 0}
+    - target: {fileID: 1784287652438034044, guid: 0fb553cf8247c7c4c9a1f1b1829a3dab, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 21.291105
+      objectReference: {fileID: 0}
+    - target: {fileID: 1784287652438034044, guid: 0fb553cf8247c7c4c9a1f1b1829a3dab, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1784287652438034044, guid: 0fb553cf8247c7c4c9a1f1b1829a3dab, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1784287652438034044, guid: 0fb553cf8247c7c4c9a1f1b1829a3dab, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1784287652438034044, guid: 0fb553cf8247c7c4c9a1f1b1829a3dab, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1784287652438034044, guid: 0fb553cf8247c7c4c9a1f1b1829a3dab, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1784287652438034044, guid: 0fb553cf8247c7c4c9a1f1b1829a3dab, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1784287652438034044, guid: 0fb553cf8247c7c4c9a1f1b1829a3dab, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 0fb553cf8247c7c4c9a1f1b1829a3dab, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 1937506673}
   - {fileID: 635215418}
-  - {fileID: 1182017975}
+  - {fileID: 8491987892645529669}
