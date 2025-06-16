@@ -70,6 +70,13 @@ public class EvaluateDamage : MonoBehaviour
 
     bool WaitExtra = false;
 
+
+    //FOR WIN/LOSE SEQUENCES
+
+    bool WinCheck = false;
+    bool WaitTilWin = false;
+    bool Winside = false; //False = Enemy win, True = Player win
+
     private void Start()
     {
         tutlog = FindFirstObjectByType<TutorialLogger>();
@@ -467,31 +474,72 @@ public class EvaluateDamage : MonoBehaviour
         //Save last move for Ace of Hearts
         LastDealtDamage = FinalDamage;
         TargetedPlayer = TargetsPlayer;
-        if (tutlog.isFirstEverTurn && tutlog.IncludeTutorial)
+        WaitTilWin = false;
+        FinishGame();
+        yield return new WaitUntil(() => WaitTilWin == true);
+        if (WinCheck) //Either the player or the enemy has Won
         {
+            ReadDeckScript.StartCoroutine(ReadDeckScript.ItsJoever());
             ClearEval();
             List<string> dialog = new List<string>();
-            dialog.Add("Something I forgot to mention.");
-            dialog.Add("Cards can have winning suits, adding a 1.5x boost to the value.");
-            dialog.Add("Hearts beat Clubs,");
-            dialog.Add("Clubs beat Diamonds,");
-            dialog.Add("Diamonds beat Spades,");
-            dialog.Add("and Spades beat Hearts.");
-            dialog.Add("Of course, I won't just show you my cards, so try getting lucky.");
+            if (Winside == true)
+            {
+                dialog.Add("Well, that's something I don't see often.");
+                dialog.Add("You managed to win from me.");
+                dialog.Add("I suppose I underestimated you.");
+                dialog.Add("You can keep the chips you won from me.");
+                dialog.Add("Come back if you ever want to have another match.");
+            } else
+            {
+                dialog.Add("Well, looks like you lost.");
+                dialog.Add("It was a good match, I'll admit.");
+                dialog.Add("Come back when you have another 50 chips to spare.");
+            }
+            dialog.Add("I'll be waiting.");
             dialogSystem.DialogueSequence(dialog);
             yield return new WaitUntil(() => dialogSystem.DialogueFinished);
-            tutlog.isFirstEverTurn = false;
-        }
-        if(usedTurns >= TurnsUntilFace)
-        {
-            usedTurns = 0;
-            ReadDeckScript.Regen(true);
-        } else
-        {
-            ReadDeckScript.Regen();
-        }
+
+
+        } else {
+            if (tutlog.isFirstEverTurn && tutlog.IncludeTutorial)
+            {
+                ClearEval();
+                List<string> dialog = new List<string>();
+                dialog.Add("Something I forgot to mention.");
+                dialog.Add("Cards can have winning suits, adding a 1.5x boost to the value.");
+                dialog.Add("Hearts beat Clubs,");
+                dialog.Add("Clubs beat Diamonds,");
+                dialog.Add("Diamonds beat Spades,");
+                dialog.Add("and Spades beat Hearts.");
+                dialog.Add("Of course, I won't just show you my cards, so try getting lucky.");
+                dialogSystem.DialogueSequence(dialog);
+                yield return new WaitUntil(() => dialogSystem.DialogueFinished);
+                tutlog.isFirstEverTurn = false;
+            }
+            if (usedTurns >= TurnsUntilFace)
+            {
+                usedTurns = 0;
+                ReadDeckScript.Regen(true);
+            }
+            else
+            {
+                ReadDeckScript.Regen();
+            }
 
             ClearEval();
+        }
+    }
+
+    void FinishGame()
+    {
+        if(plrHealth <= 0 && enemyHealth > 0) //Player lost
+        {
+            return;
+        }
+        if (plrHealth > 0 && enemyHealth <= 0) //Player won
+        {
+            return;
+        }
     }
 
     public int AffectIntended(Card card1, Card card2, int NumberModify)

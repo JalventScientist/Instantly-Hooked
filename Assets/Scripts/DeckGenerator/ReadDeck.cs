@@ -523,4 +523,30 @@ public class ReadDeck : MonoBehaviour
             StartCoroutine(PullOneSide(shortage, false));
         }
     }
+
+    public IEnumerator ItsJoever()
+    {
+        SetCardActivity(false);
+        yield return unloadCards;
+        ThrowCard[] ThrownCards = FindObjectsByType<ThrowCard>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        List<GameObject> tempPlayerDeck = PlayerDeck;
+        List<GameObject> tempEnemyDeck = EnemyDeck;
+        foreach (ThrowCard card in ThrownCards)
+        {
+            yield return new WaitForSeconds(Random.Range(0.01f, 0.05f));
+            card.DestroyCard();
+        }
+        foreach (GameObject card in tempPlayerDeck)
+        {
+            if (!card.IsUnityNull())
+            {
+                PlayerDeck[PlayerDeck.IndexOf(card)].GetComponent<Card>().ForceRemoveCards();
+            }
+            else
+            {
+                print("GameObject is destroyed or smth idkf");
+            }
+            yield return waitFixed;
+        }
+    }
 }
