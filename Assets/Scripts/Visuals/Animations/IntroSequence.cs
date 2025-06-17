@@ -37,6 +37,7 @@ public class IntroSequence : MonoBehaviour
         yield return new WaitForSeconds(0.75f);
         dialog.DialogueSequence(Dialogue);
         yield return new WaitUntil(() => dialog.DialogueFinished);
+        FindFirstObjectByType<GameEnd>().TimerActive = true;
         GameStarter.Init();
         enabled = false;
     }

@@ -307,10 +307,10 @@ public class ReadDeck : MonoBehaviour
             switch (TextIndex)
             {
                 case 0:
-                    dialogSystem.SingleDialog("I've put the face cards of spades in");
+                    dialogSystem.SingleDialog("I've put the face cards of spades in.");
                     break;
                 case 1:
-                    dialogSystem.SingleDialog("I've put the face cards of hearts in");
+                    dialogSystem.SingleDialog("I've put the face cards of hearts in.");
                     break;
                 case 2:
                     dialogSystem.SingleDialog("I've put the face cards of diamonds in.");

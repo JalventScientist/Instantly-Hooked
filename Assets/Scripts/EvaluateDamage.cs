@@ -70,12 +70,16 @@ public class EvaluateDamage : MonoBehaviour
 
     bool WaitExtra = false;
 
+    int TotalCardsPLayed = 0;
+
 
     //FOR WIN/LOSE SEQUENCES
 
     bool WinCheck = false;
     bool WaitTilWin = false;
     bool Winside = false; //False = Enemy win, True = Player win
+
+    GameEnd gameEndScript;
 
     private void Start()
     {
@@ -84,6 +88,7 @@ public class EvaluateDamage : MonoBehaviour
         CamAnimator = FindFirstObjectByType<AnimateCam>();
         EnemyScript = GetComponent<BasicEnemy>();
         ReadDeckScript = GetComponent<ReadDeck>();
+        gameEndScript = FindFirstObjectByType<GameEnd>();
     }
 
     private void Update()
@@ -104,6 +109,7 @@ public class EvaluateDamage : MonoBehaviour
     {
         if (targetCard.IsPlayerCard)
         {
+            TotalCardsPLayed++;
             if (targetCard.uniqueCard != Uniquecard.None && !CheckForBuff(targetCard, CardType.Spade, Uniquecard.Jack))
             {
                 print(targetCard.IsUnityNull());
@@ -476,9 +482,10 @@ public class EvaluateDamage : MonoBehaviour
         TargetedPlayer = TargetsPlayer;
         WaitTilWin = false;
         FinishGame();
-        yield return new WaitUntil(() => WaitTilWin == true);
         if (WinCheck) //Either the player or the enemy has Won
         {
+            gameEndScript.CardsUsed = TotalCardsPLayed;
+            gameEndScript.SubmitResults();
             ReadDeckScript.StartCoroutine(ReadDeckScript.ItsJoever());
             ClearEval();
             List<string> dialog = new List<string>();
@@ -489,16 +496,19 @@ public class EvaluateDamage : MonoBehaviour
                 dialog.Add("I suppose I underestimated you.");
                 dialog.Add("You can keep the chips you won from me.");
                 dialog.Add("Come back if you ever want to have another match.");
-            } else
+                gameEndScript.WinLose.text = "You won double your chips!";
+            }
+            else
             {
                 dialog.Add("Well, looks like you lost.");
                 dialog.Add("It was a good match, I'll admit.");
                 dialog.Add("Come back when you have another 50 chips to spare.");
+                gameEndScript.WinLose.text = "You lost your chips.";
             }
             dialog.Add("I'll be waiting.");
             dialogSystem.DialogueSequence(dialog);
             yield return new WaitUntil(() => dialogSystem.DialogueFinished);
-
+            gameEndScript.StartCoroutine(gameEndScript.FadeIn());
 
         } else {
             if (tutlog.isFirstEverTurn && tutlog.IncludeTutorial)
@@ -534,10 +544,14 @@ public class EvaluateDamage : MonoBehaviour
     {
         if(plrHealth <= 0 && enemyHealth > 0) //Player lost
         {
+            WinCheck = true;
+            Winside = false;
             return;
         }
         if (plrHealth > 0 && enemyHealth <= 0) //Player won
         {
+            WinCheck = true;
+            Winside = true;
             return;
         }
     }
