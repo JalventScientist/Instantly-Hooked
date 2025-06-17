@@ -1,6 +1,7 @@
 using UnityEngine;
 using DG.Tweening;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameEnd : MonoBehaviour
 {
@@ -14,6 +15,21 @@ public class GameEnd : MonoBehaviour
     [SerializeField] TMP_Text cardText; //Display how many cards the player has used the entire match
 
     public bool TimerActive = false;
+    public int CardsUsed = 0;
+
+    [SerializeField]
+
+    public void ToScene(bool MenuOrRestart)
+    {
+
+        if (MenuOrRestart) //True = to menu
+        {
+            SceneManager.LoadScene("MainMenu");
+        } else
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name); //False = restart the match
+        }
+    }
 
 
     private void Update()
@@ -31,5 +47,6 @@ public class GameEnd : MonoBehaviour
         string TotalTime = string.Format("{0:00}:{1:00}", minutes, seconds);
 
         TimeText.text = "Time: " + TotalTime;
+        cardText.text = "Cards Played: " + CardsUsed.ToString();
     }
 }
