@@ -459,13 +459,14 @@ public class EvaluateDamage : MonoBehaviour
         TargetsPlayer = InitialDamage < 0 ? true : false;
         if (TargetsPlayer)
         {
-            Total.DOColor(new Color(1f, .5f, .5f, 0), 0.5f);
+            Total.DOColor(new Color(1f, .5f, .5f, 1), 0.5f);
         } else
         {
-            Total.DOColor(new Color(.5f, 1, .5f, 0), 0.5f);
+            Total.DOColor(new Color(.5f, 1, .5f, 1), 0.5f);
         }
         yield return def;
-            FinalDamage = Mathf.Abs(InitialDamage);
+        Total.DOFade(0,.5f);
+        FinalDamage = Mathf.Abs(InitialDamage);
 
         if (TargetsPlayer)
         {
@@ -525,6 +526,7 @@ public class EvaluateDamage : MonoBehaviour
                 dialogSystem.DialogueSequence(dialog);
                 yield return new WaitUntil(() => dialogSystem.DialogueFinished);
                 tutlog.isFirstEverTurn = false;
+                tutlog.IncludeTutorial = false;
             }
             if (usedTurns >= TurnsUntilFace)
             {
