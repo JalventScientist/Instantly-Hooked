@@ -7,7 +7,6 @@ public class IntroSequence : MonoBehaviour
 {
 
     [SerializeField] DialogueSystem dialog;
-
     [SerializeField] List<string> Dialogue = new List<string>();
 
     ReadDeck GameStarter;

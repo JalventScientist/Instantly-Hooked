@@ -20,6 +20,7 @@ public class QueenHeart : Card
         {
             EvalDamage.enemyHealth += AmountToHeal;
         }
+        FindFirstObjectByType<HealthVisualiser>().UpdateDecks();
         base.ApplyCard();
     }
 }

@@ -10,12 +10,12 @@ public class TutorialToggler : MonoBehaviour
     public void ToggleTutorial()
     {
         tutorialLogger.IncludeTutorial = !tutorialLogger.IncludeTutorial;
-        statusChecker.text = tutorialLogger.IncludeTutorial ? "Tutorial Enabled" : "Tutorial Disabled";
+        statusChecker.text = tutorialLogger.IncludeTutorial ? "Tutorial Enabled (Click to toggle)" : "Tutorial Disabled (Click to toggle)";
     }
 
     void Start()
     {
         tutorialLogger = FindFirstObjectByType<TutorialLogger>();
-        statusChecker.text = tutorialLogger.IncludeTutorial ? "Tutorial Enabled" : "Tutorial Disabled";
+        statusChecker.text = tutorialLogger.IncludeTutorial ? "Tutorial Enabled (Click to toggle)" : "Tutorial Disabled (Click to toggle)";
     }
 }

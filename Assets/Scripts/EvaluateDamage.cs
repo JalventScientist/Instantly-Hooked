@@ -24,6 +24,8 @@ public class EvaluateDamage : MonoBehaviour
     BasicEnemy EnemyScript;
     ReadDeck ReadDeckScript;
     AnimateCam CamAnimator;
+    GuideShower GuideShowerScript;
+    HealthVisualiser HealthVisualiserScript;
 
     [SerializeField] TMP_Text PlayerHealthText;
     [SerializeField] TMP_Text EnemyHealthText;
@@ -89,6 +91,8 @@ public class EvaluateDamage : MonoBehaviour
         EnemyScript = GetComponent<BasicEnemy>();
         ReadDeckScript = GetComponent<ReadDeck>();
         gameEndScript = FindFirstObjectByType<GameEnd>();
+        GuideShowerScript = FindFirstObjectByType<GuideShower>();
+        HealthVisualiserScript = FindFirstObjectByType<HealthVisualiser>();
     }
 
     private void Update()
@@ -476,6 +480,7 @@ public class EvaluateDamage : MonoBehaviour
         {
             enemyHealth -= FinalDamage;
         }
+        HealthVisualiserScript.UpdateDecks();
 
         yield return new WaitForSeconds(1f);
         //Save last move for Ace of Hearts
@@ -489,6 +494,7 @@ public class EvaluateDamage : MonoBehaviour
             gameEndScript.SubmitResults();
             ReadDeckScript.StartCoroutine(ReadDeckScript.ItsJoever());
             ClearEval();
+            GuideShowerScript.ShowGuideOption(false);
             List<string> dialog = new List<string>();
             if (Winside == true)
             {

@@ -20,6 +20,7 @@ public class AceHeart : Card
         {
             evalDamage.enemyHealth += evalDamage.LastDealtDamage;
         }
+        FindFirstObjectByType<HealthVisualiser>().UpdateDecks();
         base.ApplyCard();
     }
 }
