@@ -6632,6 +6632,7 @@ MonoBehaviour:
   - A newcomer, I presume.
   - Let's get you started with a match.
   - We'll begin simple; no face cards, just pick the highest number.
+  fadeimg: {fileID: 1729847995}
   Chair: {fileID: 1324947961}
 --- !u!114 &8165409208962179503
 MonoBehaviour:

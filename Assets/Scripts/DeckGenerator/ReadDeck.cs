@@ -79,7 +79,15 @@ public class ReadDeck : MonoBehaviour
         CheckDecks();
         FindFirstObjectByType<BasicEnemy>().GetDeck();
         SetCardActivity();
-        
+        foreach(GameObject card in PlayerDeck)
+        {
+            Card script = card.GetComponent<Card>();
+            if (script.TrulyActive == false) //Because this breaks for some ungodly reason
+            {
+                script.TrulyActive = true; //Make sure all cards are active
+            }
+        }
+
     }
 
     IEnumerator shakeCam()
@@ -549,4 +557,6 @@ public class ReadDeck : MonoBehaviour
             yield return waitFixed;
         }
     }
+
+
 }

@@ -27,7 +27,6 @@ public class GameEnd : MonoBehaviour
     private void Start()
     {
         backFade.gameObject.SetActive(false);
-        frontFade.gameObject.SetActive(false);
     }
 
     public void ToScene(bool MenuOrRestart)
