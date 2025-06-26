@@ -78,15 +78,6 @@ public class ReadDeck : MonoBehaviour
         Reshuffling = false;
         CheckDecks();
         FindFirstObjectByType<BasicEnemy>().GetDeck();
-        SetCardActivity();
-        foreach(GameObject card in PlayerDeck)
-        {
-            Card script = card.GetComponent<Card>();
-            if (script.TrulyActive == false) //Because this breaks for some ungodly reason
-            {
-                script.TrulyActive = true; //Make sure all cards are active
-            }
-        }
 
     }
 
@@ -114,6 +105,10 @@ public class ReadDeck : MonoBehaviour
         {
             card.GetComponent<Card>().TrulyActive = toggle;
         }
+        if(toggle == true)
+        {
+            EmergencyCheck(); //If cards are activated, make sure they are all active
+        }
         print("Activated all cards");
     }
 
@@ -134,6 +129,7 @@ public class ReadDeck : MonoBehaviour
             if(IsMidGame)
             {
                 SetCardActivity(true);
+                EmergencyCheck();
             }
         }
 
@@ -341,6 +337,7 @@ public class ReadDeck : MonoBehaviour
 
     public IEnumerator RenewDecks()
     {
+        FindFirstObjectByType<BasicEnemy>().ForcedTarget = null;
         StartCoroutine(shakeCam());
         Reshuffling = true;
         SetCardActivity(false);
@@ -416,8 +413,9 @@ public class ReadDeck : MonoBehaviour
         }
     }
 
-    void CheckDecks(bool DontCorrect = false)// Prevents that a deck has only Special cards (unless the player has Diamond Ace, King or jack since those change the decks)
+    void CheckDecks()// Prevents that a deck has only Special cards (unless the player has Diamond Ace, King or jack since those change the decks)
     {
+        FindFirstObjectByType<BasicEnemy>().ForcedTarget = null;
         int TotalShortage = PlayerDeck.Count + EnemyDeck.Count - (MaxEnemyDeck + MaxPlayerDeck); //calculate how many cards need to be pulled
 
         if(TotalShortage > drawDeck.Count)
@@ -455,13 +453,16 @@ public class ReadDeck : MonoBehaviour
             switch (card.name)
             {
                 case "AD":
-                    EnemyHasOnlySpecial = false;
+                    EnemyHasOnlySpecial = false; //technically has only special cards, but needs to force the card to play
+                    FindFirstObjectByType<BasicEnemy>().ForcedTarget = card.name;
                     break;
                 case "AK":
-                    EnemyHasOnlySpecial = false;
+                    EnemyHasOnlySpecial = false; //technically has only special cards, but needs to force the card to play
+                    FindFirstObjectByType<BasicEnemy>().ForcedTarget = card.name;
                     break;
                 case "AJ":
-                    EnemyHasOnlySpecial = false;
+                    EnemyHasOnlySpecial = false; //technically has only special cards, but needs to force the card to play
+                    FindFirstObjectByType<BasicEnemy>().ForcedTarget = card.name;
                     break;
             }
             if (card.GetComponent<Card>().uniqueCard == Uniquecard.None && EnemyHasOnlySpecial) //Incase the player has a normal card
@@ -478,6 +479,24 @@ public class ReadDeck : MonoBehaviour
                 print("Reshuffling decks");
                 StartCoroutine(RenewDecks());
             }
+        }
+    }
+
+    public void EmergencyCheck()
+    {
+        bool ALlActive = true;
+        foreach (GameObject card in PlayerDeck)
+        {
+            Card script = card.GetComponent<Card>();
+            if (script.TrulyActive == false) //Because this breaks for some ungodly reason
+            {
+                ALlActive = false;
+            }
+        }
+        if (ALlActive == false)
+        {
+            Debug.LogError("Not all cards are active, setting them to active now.");
+            SetCardActivity(true);
         }
     }
 

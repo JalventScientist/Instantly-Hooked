@@ -245,6 +245,7 @@ public class Card : MonoBehaviour
 
     private void Update()
     {
+        OverrideUpdate();
         if (AlreadySetup && TrulyActive)
         {
 
@@ -284,5 +285,10 @@ public class Card : MonoBehaviour
                 InfoText.DOColor(new Color(1, 1, 1, 0), 0.3f);
             }
         }
+    }
+
+    public virtual void OverrideUpdate()
+    {
+
     }
 }

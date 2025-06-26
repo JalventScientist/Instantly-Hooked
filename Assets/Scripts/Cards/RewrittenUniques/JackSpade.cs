@@ -13,7 +13,6 @@ public class JackSpade : Card
 
     private void Start()
     {
-        WillBeAssigned = false;
         deck = FindFirstObjectByType<ReadDeck>();
         tooltip = transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<TMP_Text>();
     }
@@ -59,7 +58,7 @@ public class JackSpade : Card
         return EndValue;
     }
 
-    private void Update()
+    public override void OverrideUpdate()
     {
         if(ErrorTime > 0f)
         {

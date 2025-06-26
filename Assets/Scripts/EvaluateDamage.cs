@@ -24,7 +24,6 @@ public class EvaluateDamage : MonoBehaviour
     BasicEnemy EnemyScript;
     ReadDeck ReadDeckScript;
     AnimateCam CamAnimator;
-    GuideShower GuideShowerScript;
     HealthVisualiser HealthVisualiserScript;
 
     [SerializeField] TMP_Text PlayerHealthText;
@@ -93,7 +92,6 @@ public class EvaluateDamage : MonoBehaviour
         EnemyScript = GetComponent<BasicEnemy>();
         ReadDeckScript = GetComponent<ReadDeck>();
         gameEndScript = FindFirstObjectByType<GameEnd>();
-        GuideShowerScript = FindFirstObjectByType<GuideShower>();
         HealthVisualiserScript = FindFirstObjectByType<HealthVisualiser>();
         cardAudioSource = Total.GetComponent<AudioSource>();
     }
@@ -400,7 +398,7 @@ public class EvaluateDamage : MonoBehaviour
         {
             if (WaitExtra)
             {
-                yield return new WaitForSeconds(2f);
+                yield return new WaitForSeconds(3f);
                 WaitExtra = false;
             } else
             {
@@ -502,7 +500,6 @@ public class EvaluateDamage : MonoBehaviour
             gameEndScript.SubmitResults();
             ReadDeckScript.StartCoroutine(ReadDeckScript.ItsJoever());
             ClearEval();
-            GuideShowerScript.ShowGuideOption(false);
             List<string> dialog = new List<string>();
             if (Winside == true)
             {
