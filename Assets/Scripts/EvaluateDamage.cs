@@ -74,6 +74,8 @@ public class EvaluateDamage : MonoBehaviour
 
     int TotalCardsPLayed = 0;
 
+    AudioSource cardAudioSource; //for indicating if the showdown wins or not
+
 
     //FOR WIN/LOSE SEQUENCES
 
@@ -93,6 +95,7 @@ public class EvaluateDamage : MonoBehaviour
         gameEndScript = FindFirstObjectByType<GameEnd>();
         GuideShowerScript = FindFirstObjectByType<GuideShower>();
         HealthVisualiserScript = FindFirstObjectByType<HealthVisualiser>();
+        cardAudioSource = Total.GetComponent<AudioSource>();
     }
 
     private void Update()
@@ -135,6 +138,7 @@ public class EvaluateDamage : MonoBehaviour
                 }
                 else
                 {
+                    ReadDeckScript.SetCardActivity(false);
                     StartCoroutine(Delay(0.2f, () => { CamAnimator.ToPos(true); }));
                     StartCoroutine(Delay(1f, () => { WaitForEval(); }));
                 }
@@ -463,9 +467,13 @@ public class EvaluateDamage : MonoBehaviour
         TargetsPlayer = InitialDamage < 0 ? true : false;
         if (TargetsPlayer)
         {
+            cardAudioSource.clip = Resources.Load<AudioClip>("lose");
+            cardAudioSource.Play();
             Total.DOColor(new Color(1f, .5f, .5f, 1), 0.5f);
         } else
         {
+            cardAudioSource.clip = Resources.Load<AudioClip>("win");
+            cardAudioSource.Play();
             Total.DOColor(new Color(.5f, 1, .5f, 1), 0.5f);
         }
         yield return def;
@@ -522,13 +530,10 @@ public class EvaluateDamage : MonoBehaviour
             {
                 ClearEval();
                 List<string> dialog = new List<string>();
-                dialog.Add("Something I forgot to mention.");
-                dialog.Add("Cards can have winning suits, adding a 1.5x boost to the value.");
-                dialog.Add("Hearts beat Clubs,");
-                dialog.Add("Clubs beat Diamonds,");
-                dialog.Add("Diamonds beat Spades,");
-                dialog.Add("and Spades beat Hearts.");
-                dialog.Add("Of course, I won't just show you my cards, so try getting lucky.");
+                dialog.Add("You're probably wondering what defines a win or loss.");
+                dialog.Add("These 2 stacks of chips decide them all.");
+                dialog.Add("Whoever has no chips left, loses. Simple as that.");
+                dialog.Add("As for suit bonuses, you can see them on that little sheet i placed.");
                 dialogSystem.DialogueSequence(dialog);
                 yield return new WaitUntil(() => dialogSystem.DialogueFinished);
                 tutlog.isFirstEverTurn = false;

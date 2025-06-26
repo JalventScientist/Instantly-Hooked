@@ -27,6 +27,8 @@ public class MenuFunctions : MonoBehaviour
     public void LoadScene()
     {
         FadeUI.SetActive(true);
+        Camera.main.transform.DOLocalMoveX(5.61f, 3f).SetEase(Ease.InOutQuad);
+        Camera.main.transform.DOLocalRotate(new Vector3(-13.1f, 0, 0), 3f).SetEase(Ease.InOutQuad);
         fadeimg.DOColor(new Color(0, 0, 0, 1), 1f).OnComplete(() =>
         {
             SceneManager.LoadScene(TargetScene);

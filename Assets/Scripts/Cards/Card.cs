@@ -31,6 +31,7 @@ public class Card : MonoBehaviour
 
     public bool isSpecial = false;
 
+    AudioSource cardAudioSource; //for the pulling sound
 
     //Card Matching
     bool isTied = false;
@@ -52,11 +53,24 @@ public class Card : MonoBehaviour
 
     private void Awake()
     {
+        if(TryGetComponent<AudioSource>(out AudioSource audioSource))
+        {
+            cardAudioSource = audioSource;
+        }
+        else
+        {
+            gameObject.AddComponent<AudioSource>();
+            cardAudioSource = GetComponent<AudioSource>();
+        }
+        cardAudioSource.clip = Resources.Load<AudioClip>("card2");
+        cardAudioSource.playOnAwake = false;
+        cardAudioSource.Stop();
         ButtonTransform = transform.GetChild(0).GetComponent<RectTransform>();
         hoverTriggers = ButtonTransform.GetComponent<EventTrigger>();
         ButtonTransform.position = new Vector3(0, -400, 0);
         ButtonTransform.DOLocalMoveY(0, 0.3f).SetEase(Ease.OutBack);
-        if(isSpecial)
+        cardAudioSource.Play();
+        if (isSpecial)
         {
             InfoText = transform.GetChild(0).GetChild(0).GetChild(0).GetComponent<TMP_Text>();
             InfoText.text = EffectText;
