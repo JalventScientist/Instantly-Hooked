@@ -50,6 +50,7 @@ public class IntroSequence : MonoBehaviour
         dialog.DialogueSequence(Dialogue);
         yield return new WaitUntil(() => dialog.DialogueFinished);
         FindFirstObjectByType<GameEnd>().TimerActive = true;
+        FindFirstObjectByType<Pause>().InputDebounce = false;
         GameStarter.Init();
         enabled = false;
     }
